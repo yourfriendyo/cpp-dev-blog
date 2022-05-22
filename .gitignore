@@ -37,6 +37,7 @@
 *.vcxproj
 *.filters
 *.user
+.vs/*
 
 # project_name/Debug/project_name.tlog/
 *.tlog
