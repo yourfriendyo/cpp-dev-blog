@@ -3,8 +3,8 @@
 
 # Compiled Object files
 *.slo
-*.lo
-*.o
+# *.lo
+# *.o
 *.obj
 
 # Precompiled Headers
@@ -27,6 +27,28 @@
 *.lib
 
 # Executables
-*.exe
-*.out
-*.app
+# *.exe
+# *.out
+# *.app
+
+#### VS2019
+
+# project_name/
+*.vcxproj
+*.filters
+*.user
+
+# project_name/Debug/project_name.tlog/
+*.tlog
+*.lastbuildstate
+*.txt
+
+# project_name/Debug/
+*.log
+*.recipe
+*.ilk
+*.enc
+*.obj
+*.idb
+*.pdb
+
