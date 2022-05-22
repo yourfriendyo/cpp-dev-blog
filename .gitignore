@@ -40,6 +40,7 @@
 *.vs/
 *.DS_Store
 
+
 # project_name/Debug/project_name.tlog/
 *.tlog
 *.lastbuildstate
