@@ -1,15 +1,14 @@
 #! /bin/bash
 cd ~/IN-THE-HOUSE
+
 echo "----------本地库状态----------"
 git status
 echo "----------本地库状态----------"
-while :;
-do
-	read -r -p "请输入COMMIT信息" input
-	echo "----------继续提交----------"
-	git add .
-	git commit -m "${input}"
-	git push IN-THE-HOUSE Linux
-	echo "----------提交成功----------"
-done
+
+read -r -p "请输入COMMIT信息：" input
+git add .
+git commit -m "${input}"
+git push IN-THE-HOUSE Linux
+
+echo "----------提交成功----------"
 
