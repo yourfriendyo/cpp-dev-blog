@@ -7,7 +7,7 @@
 
 namespace CPBlockQueue
 {
-    int deflaut_cap = 5;
+    int g_deflaut_cap = 5;
     template <class T>
     class BlockQueue
     {
@@ -49,7 +49,7 @@ namespace CPBlockQueue
             pthread_cond_signal(&_isEmpty); // 生产者在是否为空下等待，唤醒生产者就是通知是否为空的条件
         }
     public:
-        BlockQueue() : _cap(deflaut_cap) {
+        BlockQueue() : _cap(g_deflaut_cap) {
             pthread_mutex_init(&_mtx, nullptr);
             pthread_cond_init(&_isFull, nullptr);
             pthread_cond_init(&_isEmpty, nullptr);
@@ -63,27 +63,36 @@ namespace CPBlockQueue
         void Push(const T& in)  
         {
             LockQueue(); //加锁
-            if (IsFull()) {
-                ProducerWait(); //出函数必然获取到锁
+
+            while (IsFull()) {
+                // 防止挂起失败或伪唤醒(条件不满足却被唤醒)，
+                // 利用while循环持续检测，保证线程被唤醒时一定满足条件
+                ProducerWait(); // 出函数必然获取到锁
             }
+
             _q.push(in); // 向队列中放数据
-            if (_q.size() > _cap / 2) {
-                WakeupConsumer(); // 通知消费者来消费
-            }
+            // if (_q.size() > _cap / 2) {
+            //     WakeupConsumer(); // 通知消费者来消费
+            // }
+            WakeupConsumer(); // 通知消费者来消费
             UnlockQueue();
         }
 
         void Pop(T* out)       
         {
             LockQueue(); //加锁
-            if (IsEmpty()) {
+
+            while (IsEmpty()) {
                 ConsumerWait(); 
             }
+
             *out = _q.front();
             _q.pop(); // 向队列中取数据
-            if (_q.size() < _cap / 2) {
-                WakeupConsumer(); // 通知消费者来消费
-            }
+
+            // if (_q.size() < _cap / 2) {
+            //     WakeupConsumer(); // 通知消费者来消费
+            // }
+            WakeupConsumer(); // 通知消费者来消费
             UnlockQueue();
         }
     };

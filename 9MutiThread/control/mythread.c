@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <pthread.h>
+
 #include <unistd.h>
 #define NUM 5
 
@@ -58,8 +57,6 @@
 //
 //    //for (int i = 0; i < NUM; i++)
 //    //{
-//    //    int ret = pthread_join(tid[i], &status);
-//    //    printf("thread[%d] join ret: %d, status: %d\n", i, ret,  (int)status);
 //    //    sleep(1);
 //    //}
 //
