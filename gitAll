@@ -1,4 +1,5 @@
 #! /bin/bash
+cd ~/IN-THE-HOUSE
 echo "----------本地库状态----------"
 git status
 echo "----------本地库状态----------"

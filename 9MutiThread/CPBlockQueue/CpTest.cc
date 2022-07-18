@@ -13,7 +13,7 @@ void* consumer(void* args)
         bq->Pop(&t); // 获取任务
         // t.Run(); // 执行任务
         t();
-        sleep(1);
+        // sleep(1);
         std::cout << "consumer: " << pthread_self() << " get a task: ";
         t.PrintTask();
     }
@@ -31,9 +31,9 @@ void* producer(void* args)
         Task t(x, y, op); // 生成任务
 
         bq->Push(t); // 派发任务到队列中
-        sleep(1); // 不加 sleep 导致队列满后卡住
+        // sleep(1); // 不加 sleep 导致队列满后卡住
 
-        std::cout << "Producer: " << pthread_self() << " distribute a task: ";
+        std::cout << "Producer: " << pthread_self() << " make a task: ";
         t.PrintTask();
     }   
 }
