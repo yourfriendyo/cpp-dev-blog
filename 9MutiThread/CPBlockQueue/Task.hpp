@@ -24,8 +24,8 @@ namespace CPTask
             case '/':
                 _res = _x / _y;
                 break;
-            case '&':
-                _res = _x & _y;
+            case '%':
+                _res = _x % _y;
                 break;
             default:
                 std::cout << "unknow fatal!" << std::endl;

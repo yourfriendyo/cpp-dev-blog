@@ -14,7 +14,7 @@ void* consumer(void* args)
         // t.Run(); // 执行任务
         t();
         // sleep(1);
-        std::cout << "consumer: " << pthread_self() << " get a task: ";
+        std::cout << "Consumer: " << pthread_self() << " get a task: ";
         t.PrintTask();
     }
 }
@@ -22,11 +22,11 @@ void* consumer(void* args)
 void* producer(void* args)
 {
     BlockQueue<Task>* bq = (BlockQueue<Task>*)args;
-    std::string ops = "+-*/&"; // 操作集
+    std::string ops = "+-*/%"; // 操作集
 
     while (true) {
         int x = rand() % 20 + 1;
-        int y = rand() % 20 + 1;
+        int y = rand() % 10 + 1;
         char op = ops[rand() % 5]; // [0, 4] 利用操作集的下标
         Task t(x, y, op); // 生成任务
 
@@ -41,7 +41,6 @@ void* producer(void* args)
 int main()
 {
     srand((long long)time(nullptr)); // 生成随机数
-    
     BlockQueue<Task>* bq = new BlockQueue<Task>(); // 定义阻塞队列
 
     pthread_t c[5], p[5]; // 定义生产者和消费者线程

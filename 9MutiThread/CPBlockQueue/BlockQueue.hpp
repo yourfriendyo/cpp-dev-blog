@@ -69,11 +69,9 @@ namespace CPBlockQueue
                 // 利用while循环持续检测，保证线程被唤醒时一定满足条件
                 ProducerWait(); // 出函数必然获取到锁
             }
-
             _q.push(in); // 向队列中放数据
-            // if (_q.size() > _cap / 2) {
-            //     WakeupConsumer(); // 通知消费者来消费
-            // }
+
+            // if (_q.size() > _cap / 2) { WakeupConsumer(); }
             WakeupConsumer(); // 通知消费者来消费
             UnlockQueue();
         }
@@ -89,10 +87,8 @@ namespace CPBlockQueue
             *out = _q.front();
             _q.pop(); // 向队列中取数据
 
-            // if (_q.size() < _cap / 2) {
-            //     WakeupConsumer(); // 通知消费者来消费
-            // }
-            WakeupConsumer(); // 通知消费者来消费
+            // if (_q.size() < _cap / 2) { WakeupConsumer(); }
+            WakeupProducer(); // 通知生产者来生产 
             UnlockQueue();
         }
     };
