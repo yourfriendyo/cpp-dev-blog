@@ -63,25 +63,16 @@ int main(int argc, char* argv[])
             buffer[cnt] = 0;
             std::cout << "client# " << buffer << std::endl;
 
-            // vector<string> sv;
-            // for (int i = 0; strArr[i] == strsep((char**)&buffer, " ") != NULL; i++)
-            // {
-            //     std::cout << strArr[i] << std::endl;
-            // }
+            FILE* fp = popen(buffer, "r"); //看作命令
 
-            // FILE* fp = popen(buffer, "r"); //看作命令
-            // if (fork() == 0) { //child
-            //
-            //     execvp(strArr[0], strArr);
-            //     std::string res;
-            //     while (fgets(buffer, sizeof(buffer), stdout) != NULL) {
-            //         res += buffer;
-            //     }
-            //     // 发送数据
-            //     // std::string reply = ">>> " + std::endl + std::string(buffer) + std::endl + " <<<";
-            //     std::string reply = std::string(buffer);
-            //     sendto(sock, reply.c_str(), reply.size(), 0, (struct sockaddr*)&peer, len);
-            // }
+                std::string res;
+                while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+                    res += buffer;
+                }
+                // 发送数据
+                // std::string reply = ">>> " + std::endl + std::string(buffer) + std::endl + " <<<";
+                std::string reply = std::string(buffer);
+                sendto(sock, reply.c_str(), reply.size(), 0, (struct sockaddr*)&peer, len);
         }
         else {
             std::cerr << "recvfrom error" << std::endl;

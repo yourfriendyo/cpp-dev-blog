@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
         char buffer[1024];
         fgets(buffer, sizeof(buffer), stdin);
 
-        int cnt = send(sock, buffer, strlen(buffer), 0);
+        int cnt = send(sock, buffer, strlen(buffer) - 1, 0); // strlen()-1去回车
 
         ssize_t s = recv(sock, buffer, sizeof(buffer), 0);
         if (s > 0) {
