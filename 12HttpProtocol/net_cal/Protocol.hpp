@@ -12,6 +12,6 @@ struct request_t
 //响应协议
 struct response_t
 {
-    int status;  // 状态码 status为0表示计算正常，其他值表示异常退出
+    int status;  // 状态码 status为0 表示计算正常，其他值表示异常退出
     int result;  // 计算结果
 };

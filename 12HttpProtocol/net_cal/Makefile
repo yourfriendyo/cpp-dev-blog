@@ -1,11 +1,11 @@
-all : HttpClient HttpServer
+all : CalClient CalServer
 
-HttpClient:HttpClient.cc
+CalClient : CalClient.cc
 	g++ -o $@ $^ -std=c++11
 
-HttpServer:HttpServer.cc
+CalServer : CalServer.cc
 	g++ -o $@ $^ -std=c++11 -lpthread
 
-.PHONY:clean
+.PHONY : clean
 clean:
-	rm -f HttpClient HttpServer
+	rm -f CalClient CalServer
