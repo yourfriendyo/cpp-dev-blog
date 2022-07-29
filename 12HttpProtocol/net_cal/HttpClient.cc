@@ -2,6 +2,8 @@
 #include <string>
 #include <cstdlib>
 #include "Socket.hpp"
+#include "Protocol.hpp"
+
 using namespace NSTcpSocket;
 
 void Usage(std::string proc) {
@@ -17,20 +19,23 @@ int main(int argc, char* argv[])
     std::cout << "hello HttpClient" << std::endl;
 
     int sock = TcpSocket::Socket();
-
     TcpSocket::Connect(sock, argv[1], atoi(argv[2]));
 
-    while (true)
-    {
-        std::cout << "input->";
+    // while (true) {
+        request_t req;
+        std::cout << "Input the first data->";
+        std::cin >> req.x;
+        std::cout << "Input the second data->";
+        std::cin >> req.y;
+        std::cout << "Input the operator->";
+        std::cin >> req.op;
+        send(sock, &req, sizeof(req), 0);
 
-        std::string send_string;
-        std::cin >> send_string;
+        response_t resp;
+        recv(sock, &resp, sizeof(resp), 0);
+        std::cout << "status[0:success]:" << resp.status << " result:" << resp.result << std::endl;
+    // }
 
-        TcpSocket::Send(sock, send_string);
-
-        TcpSocket::Recv(sock, send_string);
-    }
 
     return 0;
 }

@@ -2,12 +2,14 @@
 #include <string>
 #include <cstdlib>
 #include <pthread.h>
+#include <unistd.h>
 #include "Socket.hpp"
+#include "Protocol.hpp"
 
 using namespace NSTcpSocket;
 
 static void Usage(std::string proc) {
-    std::cout << "Usage \n\t" << proc <<" port" << std::endl;
+    std::cout << "Usage \n\t" << proc << " port" << std::endl;
     exit(1);
 }
 
@@ -16,15 +18,44 @@ void* RequestHandler(void* args)
     pthread_detach(pthread_self());
     int sock = *(int*)args;
 
-    std::string recv_string;
-    std::cout << "Server Recv begin" << std::endl;
-    TcpSocket::Recv(sock, recv_string);
-    std::cout << "Server Recv over" << std::endl;
+    // while (true) {
 
-    std::cout << recv_string << std::endl;
+    request_t req;
+    ssize_t s = recv(sock, &req, sizeof(req), 0);
+    std::cout << req.x << req.op << req.y << std::endl;
 
-    TcpSocket::Send(sock, recv_string);
+    if (s > 0)
+    {
+        response_t resp = { 0,0 };
 
+        switch (req.op) {
+        case '+':
+            resp.result = req.x + req.y;
+            break;
+        case '-':
+            resp.result = req.x - req.y;
+            break;
+        case '*':
+            resp.result = req.x * req.y;
+            break;
+        case '/':
+            if (req.y == 0) resp.status = 1;
+            else            resp.result = req.x / req.y;
+            break;
+        case '&':
+            if (req.y == 0) resp.status = 2;
+            else            resp.result = req.x & req.y;
+            break;
+        default:
+            resp.status = 3;
+        }
+        send(sock, &resp, sizeof(resp), 0);
+    }
+    else {
+        std::cerr << "recv error" << std::endl;
+    }
+    // }
+    close(sock);
     return nullptr;
 }
 
@@ -42,12 +73,11 @@ int main(int argc, char* argv[])
 
     while (true)
     {
-        TcpSocket::Accept(sock); // 接收连接
+        int new_sock = TcpSocket::Accept(sock); // 接收连接
 
         pthread_t tid;
-        pthread_create(&tid, nullptr, RequestHandler, (void*)&sock);
+        pthread_create(&tid, nullptr, RequestHandler, (void*)&new_sock);
     }
-
 
     return 0;
 }

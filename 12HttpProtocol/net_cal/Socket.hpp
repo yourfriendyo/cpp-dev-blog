@@ -43,14 +43,18 @@ namespace NSTcpSocket
                 exit(4);
             }
         }
-        static void Accept(int sock)
+        static int Accept(int sock)
         {
             struct sockaddr_in peer;
-            socklen_t len;
-            sock = accept(sock, (struct sockaddr*)&peer, &len);
-            if (sock <= 0) {
+            socklen_t len = sizeof(peer);
+            int new_sock = accept(sock, (struct sockaddr*)&peer, &len);
+            if (new_sock <= 0) {
                 std::cerr << "accept error" << std::endl;
                 exit(5);
+            }
+            else {
+                std::cout << "accept success" << std::endl;
+                return new_sock;
             }
         }
         static void Connect(int sock, const std::string& ip, int16_t port)
@@ -59,9 +63,13 @@ namespace NSTcpSocket
             peer.sin_family = AF_INET;
             peer.sin_addr.s_addr = inet_addr(ip.c_str());
             peer.sin_port = htons(port);
+
             if (connect(sock, (struct sockaddr*)&peer, sizeof(peer)) < 0) {
                 std::cerr << "connect error" << std::endl;
                 exit(6);
+            }
+            else {
+                std::cout << "connect success" << std::endl;
             }
         }
         static void Send(int sock, std::string& buffer)
@@ -91,7 +99,7 @@ namespace NSTcpSocket
                 std::cout << "Recv remote quit ..." << std::endl;
             }
             else {
-                std::cerr << "recv error" << std::endl;
+                std::cerr << "Recv error" << std::endl;
                 exit(8);
             }
         }
