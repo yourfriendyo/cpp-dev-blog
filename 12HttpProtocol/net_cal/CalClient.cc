@@ -33,19 +33,16 @@ int main(int argc, char* argv[])
 
     //序列化
     std::string enjson_string = SerializeRequest(req);
-    ssize_t s = send(sock, enjson_string.c_str(), enjson_string.size(), 0);
+    TcpSocket::Send(sock, enjson_string);
 
     //反序列化
     response_t resp;
-    char buffer[1024];
-    s = recv(sock, buffer, sizeof(buffer) - 1, 0);
-    if (s > 0) {
-        buffer[s] = 0;
+    std::string buffer;
+    if (TcpSocket::Recv(sock, buffer)) {
         DeserializeResponse(buffer, resp);
         std::cout << "status[0:success]:" << resp.status << " result:" << resp.result << std::endl;
     }
 
     // }
-
     return 0;
 }

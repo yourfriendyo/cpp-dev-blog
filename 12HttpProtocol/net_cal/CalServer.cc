@@ -21,12 +21,9 @@ void* RequestHandler(void* args)
 
     // while (true) {
     // 反序列化
-    char buffer[1024];
-    ssize_t s = recv(sock, buffer, sizeof(buffer) - 1, 0);
-
-    if (s > 0)
+    std::string buffer;
+    if (TcpSocket::Recv(sock, buffer))
     {
-        buffer[s] = 0;
         request_t req;
         DeserializeRequest(buffer, req);
         std::cout << req.x << req.op << req.y << std::endl;
@@ -55,10 +52,7 @@ void* RequestHandler(void* args)
         }
         //序列化
         std::string enjson_string = SerializeResponse(resp);
-        send(sock, enjson_string.c_str(), enjson_string.size(), 0);
-    }
-    else {
-        std::cerr << "recv error" << std::endl;
+        TcpSocket::Send(sock, enjson_string);
     }
     // }
     close(sock);

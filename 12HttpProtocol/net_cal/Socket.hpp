@@ -72,7 +72,7 @@ namespace NSTcpSocket
                 std::cout << "connect success" << std::endl;
             }
         }
-        static void Send(int sock, std::string& buffer)
+        static bool Send(int sock, std::string& buffer)
         {
             ssize_t s = send(sock, buffer.c_str(), buffer.size(), 0);
             if (s > 0) {
@@ -86,8 +86,9 @@ namespace NSTcpSocket
                 std::cerr << "send error" << std::endl;
                 exit(7);
             }
+            return s > 0;
         }
-        static void Recv(int sock, std::string& buffer)
+        static bool Recv(int sock, std::string& buffer)
         {
             buffer.clear();
             char tmp[1024];
@@ -102,6 +103,7 @@ namespace NSTcpSocket
                 std::cerr << "Recv error" << std::endl;
                 exit(8);
             }
+            return s > 0;
         }
     };
 }
