@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <jsoncpp/json/json.h>
 #include "Socket.hpp"
 #include "Protocol.hpp"
 
@@ -22,20 +23,29 @@ int main(int argc, char* argv[])
     TcpSocket::Connect(sock, argv[1], atoi(argv[2]));
 
     // while (true) {
-        request_t req;
-        std::cout << "Input the first data->";
-        std::cin >> req.x;
-        std::cout << "Input the second data->";
-        std::cin >> req.y;
-        std::cout << "Input the operator->";
-        std::cin >> req.op;
-        send(sock, &req, sizeof(req), 0);
+    request_t req;
+    std::cout << "Input the first data->";
+    std::cin >> req.x;
+    std::cout << "Input the second data->";
+    std::cin >> req.y;
+    std::cout << "Input the operator->";
+    std::cin >> req.op;
 
-        response_t resp;
-        recv(sock, &resp, sizeof(resp), 0);
+    //序列化
+    std::string enjson_string = SerializeRequest(req);
+    ssize_t s = send(sock, enjson_string.c_str(), enjson_string.size(), 0);
+
+    //反序列化
+    response_t resp;
+    char buffer[1024];
+    s = recv(sock, buffer, sizeof(buffer) - 1, 0);
+    if (s > 0) {
+        buffer[s] = 0;
+        DeserializeResponse(buffer, resp);
         std::cout << "status[0:success]:" << resp.status << " result:" << resp.result << std::endl;
-    // }
+    }
 
+    // }
 
     return 0;
 }

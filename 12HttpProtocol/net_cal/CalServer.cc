@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <pthread.h>
 #include <unistd.h>
+#include <jsoncpp/json/json.h>
 #include "Socket.hpp"
 #include "Protocol.hpp"
 
@@ -19,14 +20,18 @@ void* RequestHandler(void* args)
     int sock = *(int*)args;
 
     // while (true) {
-    request_t req;
-    ssize_t s = recv(sock, &req, sizeof(req), 0);
-    std::cout << req.x << req.op << req.y << std::endl;
+    // 反序列化
+    char buffer[1024];
+    ssize_t s = recv(sock, buffer, sizeof(buffer) - 1, 0);
 
     if (s > 0)
     {
-        response_t resp = { 0,0 };
+        buffer[s] = 0;
+        request_t req;
+        DeserializeRequest(buffer, req);
+        std::cout << req.x << req.op << req.y << std::endl;
 
+        response_t resp = { 0,0 };
         switch (req.op) {
         case '+':
             resp.result = req.x + req.y;
@@ -48,7 +53,9 @@ void* RequestHandler(void* args)
         default:
             resp.status = 3;
         }
-        send(sock, &resp, sizeof(resp), 0);
+        //序列化
+        std::string enjson_string = SerializeResponse(resp);
+        send(sock, enjson_string.c_str(), enjson_string.size(), 0);
     }
     else {
         std::cerr << "recv error" << std::endl;
@@ -56,6 +63,7 @@ void* RequestHandler(void* args)
     // }
     close(sock);
     std::cout << "server done" << std::endl;
+
     return nullptr;
 }
 

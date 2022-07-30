@@ -1,10 +1,10 @@
 all : CalClient CalServer
 
 CalClient : CalClient.cc
-	g++ -o $@ $^ -std=c++11
+	g++ -o $@ $^ -std=c++11 -ljsoncpp
 
 CalServer : CalServer.cc
-	g++ -o $@ $^ -std=c++11 -lpthread
+	g++ -o $@ $^ -std=c++11 -ljsoncpp -lpthread
 
 .PHONY : clean
 clean:
