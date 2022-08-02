@@ -32,19 +32,24 @@ void* HttpResquestHandler(void* args)
         stat(home_page.c_str(), &st); // 以待获取文件信息
 
         std::string http_response;
-        http_response += "http/1.0 200 OK\n"; // 状态行
-        http_response += "Content-Type: text/html; charset=utf-8\n";  // 响应报头
-        http_response += "Content-Length: ";
-        http_response += std::to_string(st.st_size); // 补齐正文内容属性数据
-        http_response += "\n\n";  // 补齐属性的换行和空行
 
         //响应正文是index.html的文件内容
         std::ifstream ifs(home_page);
-        if (!ifs.is_open()) {
+        if (!ifs.is_open())
+        {
             std::cerr << "ifs open fail" << std::endl;
         }
-        else {
-            char buffer[st.st_size + 1];  // 以文件大小创建缓冲区
+        else
+        {
+            // http_response += "http/1.0 301 OK\n"; // 状态行
+            // http_response += "Location: https://qq.com/\n\n";
+
+            http_response += "Content-Type: text/html; charset=utf-8\n";  // 响应报头
+            http_response += "Content-Length: ";
+            http_response += std::to_string(st.st_size); // 补齐正文内容属性数据
+            http_response += "\n\n";  // 补齐属性的换行和空行
+
+            char buffer[st.st_size];  // 以文件大小创建缓冲区
             memset(buffer, 0, sizeof(buffer));
             ifs.read(buffer, st.st_size); // 将文件内容读进缓冲区
             http_response += buffer;
