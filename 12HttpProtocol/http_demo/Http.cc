@@ -41,9 +41,10 @@ void* HttpResquestHandler(void* args)
         }
         else
         {
-            // http_response += "http/1.0 301 OK\n"; // 状态行
+            http_response += "http/1.0 200 OK\n"; // 状态行
             // http_response += "Location: https://qq.com/\n\n";
 
+            http_response += "Set-Cookie: id=111&passwd=222\n";
             http_response += "Content-Type: text/html; charset=utf-8\n";  // 响应报头
             http_response += "Content-Length: ";
             http_response += std::to_string(st.st_size); // 补齐正文内容属性数据
