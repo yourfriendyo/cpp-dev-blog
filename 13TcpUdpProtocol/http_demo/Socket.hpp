@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define BACK_LOG 5
+#define BACK_LOG 1
 
 namespace NSTcpSocket
 {

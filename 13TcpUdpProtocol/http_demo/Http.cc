@@ -79,8 +79,8 @@ int main(int argc, char* argv[])
     while (true) 
     {
         sleep(1);
-        int sock = TcpSocket::Accept(listen_sock);
-        std::cout << "socket_fd: " << sock << std::endl;
+        //int sock = TcpSocket::Accept(listen_sock);
+        //std::cout << "socket_fd: " << sock << std::endl;
         //  if (sock > 0) {
         //      pthread_t tid;
         //      pthread_create(&tid, nullptr, HttpResquestHandler, (void*)&sock);
