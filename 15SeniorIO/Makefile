@@ -1,5 +1,5 @@
-unblock:unblock.c
-	gcc -o $@ $^
+select_server:select_server.cc
+	g++ -o $@ $^
 .PHONY:clean
 clean:
-	rm -f unblock
+	rm -f select_server
