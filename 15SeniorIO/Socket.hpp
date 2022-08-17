@@ -22,6 +22,8 @@ namespace NSTcpSocket
                 std::cerr << "socket error" << std::endl;
                 exit(2);
             }
+            int opt = 1;
+            setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
             return sock;
         }
         static void Bind(int sock, uint16_t port)
@@ -53,7 +55,6 @@ namespace NSTcpSocket
                 exit(5);
             }
             else {
-                std::cout << "accept a new link ..." << std::endl;
                 return new_sock;
             }
         }
@@ -94,6 +95,7 @@ namespace NSTcpSocket
             char tmp[1024];
             ssize_t s = recv(sock, tmp, sizeof(tmp), 0);
             if (s > 0) {
+                tmp[s] = 0;
                 buffer = tmp;
             }
             else if (s == 0) {
