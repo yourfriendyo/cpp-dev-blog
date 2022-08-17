@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
                                 std::cout << "client [" << fd << "]# " << recv_buffer << std::endl;
                             }
                             else {
-                                std::cout << "sock" << fd << "关闭连接，客户端退出，数组位置["
+                                std::cout << "sock: " << fd << "关闭连接，客户端退出，数组位置["
                                     << GetIndex(fd) << "]已被清理" << std::endl;
                                 fd = -1; //数组位置为-1
                                 close(fd);
