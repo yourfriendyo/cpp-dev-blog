@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     volatile bool quit = false;
     while (!quit)
     {
-        int timeout = 1000;
+        int timeout = -1;
         //repevs就绪事件
         int n = epoll_wait(epfd, repevs, NUM, timeout);
         switch (n)
@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
                             std::cout << "fd: " << fd << " 链接获取成功 sock: " << sock << std::endl;
                             struct epoll_event _ev;
                             _ev.data.fd = sock;
-                            _ev.events = EPOLLIN;
+                            _ev.events = EPOLLIN; // | EPOLLOUT | EPOLLERR
                             epoll_ctl(epfd, EPOLL_CTL_ADD, sock, &_ev);
                             std::cout << "sock: " << sock << " 交给epoll托管成功" << std::endl;
                         }
@@ -79,13 +79,25 @@ int main(int argc, char* argv[])
                     {
                         std::cout << "fd: " << fd << " 普通读事件就绪" << std::endl;
                         std::string recv_buffer;
-                        TcpSocket::Recv(fd, recv_buffer);
-                        std::cout << "client# " << recv_buffer << std::endl;
+                        if (TcpSocket::Recv(fd, recv_buffer))
+                        {
+                            std::cout << "client[" << fd << "]# " << recv_buffer << std::endl;
+
+                            // struct epoll_event _ev;
+                            // _ev.events = EPOLLOUT;
+                            // _ev.data.fd = fd;
+                            // epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &_ev);
+                        }
+                        else
+                        {
+                            epoll_ctl(epfd, EPOLL_CTL_DEL, fd, nullptr);
+                            close(fd);
+                            std::cout << "fd: " << fd << " 出错已从epoll模型中移除" << std::endl;
+                        }
                     }
                 }
                 else if (repevs[i].events & EPOLLOUT) // 处理写入事件
                 {
-
                 }
                 else {}
             }

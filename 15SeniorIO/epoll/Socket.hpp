@@ -93,7 +93,7 @@ namespace NSTcpSocket
         {
             buffer.clear();
             char tmp[1024];
-            ssize_t s = recv(sock, tmp, sizeof(tmp), 0);
+            ssize_t s = recv(sock, tmp, sizeof(tmp) - 1, 0);
             if (s > 0) {
                 tmp[s] = 0;
                 buffer = tmp;
