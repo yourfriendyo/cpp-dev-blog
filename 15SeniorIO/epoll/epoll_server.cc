@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <sys/epoll.h>
 #include <unistd.h>
 #include "Socket.hpp"
@@ -30,7 +31,7 @@ int main(int argc, char* argv[])
     //3. 添加listen_sock和事件到内核
     struct epoll_event ev;
     ev.events = EPOLLIN;
-    // ev.data =
+    ev.data.fd = listen_sock;
     epoll_ctl(epfd, EPOLL_CTL_ADD, listen_sock, &ev);
 
     //4. 事件循环
@@ -51,14 +52,48 @@ int main(int argc, char* argv[])
             break;
         default:
             std::cout << "有事件就绪" << std::endl;
+            //5. 处理就绪
+            for (int i = 0; i < n; i++)
+            {
+                int fd = repevs[i].data.fd; // 暂时方案
+                std::cout << "fd: " << fd << " 上有事件就绪啦" << std::endl;
+                if (repevs[i].events & EPOLLIN)
+                {
+                    std::cout << "fd: " << fd << " 读事件就绪" << std::endl;
+                    if (fd == listen_sock) // 处理链接事件
+                    {
+                        std::cout << "fd: " << fd << " 是链接读事件" << std::endl;
+                        int sock = TcpSocket::Accept(listen_sock);
+                        if (sock >= 0)
+                        {
+                            std::cout << "fd: " << fd << " 链接获取成功 sock: " << sock << std::endl;
+                            struct epoll_event _ev;
+                            _ev.data.fd = sock;
+                            _ev.events = EPOLLIN;
+                            epoll_ctl(epfd, EPOLL_CTL_ADD, sock, &_ev);
+                            std::cout << "sock: " << sock << " 交给epoll托管成功" << std::endl;
+                        }
+                        else {}
+                    }
+                    else // 处理普通读取事件
+                    {
+                        std::cout << "fd: " << fd << " 普通读事件就绪" << std::endl;
+                        std::string recv_buffer;
+                        TcpSocket::Recv(fd, recv_buffer);
+                        std::cout << "client# " << recv_buffer << std::endl;
+                    }
+                }
+                else if (repevs[i].events & EPOLLOUT) // 处理写入事件
+                {
 
+                }
+                else {}
+            }
             break;
         }
-
     }
 
     close(epfd);
     close(listen_sock);
-
     return 0;
 }
