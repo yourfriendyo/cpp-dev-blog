@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
     //3. 添加listen_sock和事件到内核
     struct epoll_event ev;
-    ev.events = EPOLLIN;
+    ev.events = EPOLLIN | EPOLLET;
     ev.data.fd = listen_sock;
     epoll_ctl(epfd, EPOLL_CTL_ADD, listen_sock, &ev);
 
@@ -60,41 +60,41 @@ int main(int argc, char* argv[])
                 if (repevs[i].events & EPOLLIN)
                 {
                     std::cout << "fd: " << fd << " 读事件就绪" << std::endl;
-                    if (fd == listen_sock) // 处理链接事件
-                    {
-                        std::cout << "fd: " << fd << " 是链接读事件" << std::endl;
-                        int sock = TcpSocket::Accept(listen_sock);
-                        if (sock >= 0)
-                        {
-                            std::cout << "fd: " << fd << " 链接获取成功 sock: " << sock << std::endl;
-                            struct epoll_event _ev;
-                            _ev.data.fd = sock;
-                            _ev.events = EPOLLIN; // | EPOLLOUT | EPOLLERR
-                            epoll_ctl(epfd, EPOLL_CTL_ADD, sock, &_ev);
-                            std::cout << "sock: " << sock << " 交给epoll托管成功" << std::endl;
-                        }
-                        else {}
-                    }
-                    else // 处理普通读取事件
-                    {
-                        std::cout << "fd: " << fd << " 普通读事件就绪" << std::endl;
-                        std::string recv_buffer;
-                        if (TcpSocket::Recv(fd, recv_buffer))
-                        {
-                            std::cout << "client[" << fd << "]# " << recv_buffer << std::endl;
+                    // if (fd == listen_sock) // 处理链接事件
+                    // {
+                    //     std::cout << "fd: " << fd << " 是链接读事件" << std::endl;
+                    //     int sock = TcpSocket::Accept(listen_sock);
+                    //     if (sock >= 0)
+                    //     {
+                    //         std::cout << "fd: " << fd << " 链接获取成功 sock: " << sock << std::endl;
+                    //         struct epoll_event _ev;
+                    //         _ev.data.fd = sock;
+                    //         _ev.events = EPOLLIN; // | EPOLLOUT | EPOLLERR
+                    //         epoll_ctl(epfd, EPOLL_CTL_ADD, sock, &_ev);
+                    //         std::cout << "sock: " << sock << " 交给epoll托管成功" << std::endl;
+                    //     }
+                    //     else {}
+                    // }
+                    // else // 处理普通读取事件
+                    // {
+                    //     std::cout << "fd: " << fd << " 普通读事件就绪" << std::endl;
+                    //     std::string recv_buffer;
+                    //     if (TcpSocket::Recv(fd, recv_buffer))
+                    //     {
+                    //         std::cout << "client[" << fd << "]# " << recv_buffer << std::endl;
 
-                            // struct epoll_event _ev;
-                            // _ev.events = EPOLLOUT;
-                            // _ev.data.fd = fd;
-                            // epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &_ev);
-                        }
-                        else
-                        {
-                            epoll_ctl(epfd, EPOLL_CTL_DEL, fd, nullptr);
-                            close(fd);
-                            std::cout << "fd: " << fd << " 出错已从epoll模型中移除" << std::endl;
-                        }
-                    }
+                    //         // struct epoll_event _ev;
+                    //         // _ev.events = EPOLLOUT;
+                    //         // _ev.data.fd = fd;
+                    //         // epoll_ctl(epfd, EPOLL_CTL_MOD, fd, &_ev);
+                    //     }
+                    //     else
+                    //     {
+                    //         epoll_ctl(epfd, EPOLL_CTL_DEL, fd, nullptr);
+                    //         close(fd);
+                    //         std::cout << "fd: " << fd << " 出错已从epoll模型中移除" << std::endl;
+                    //     }
+                    // }
                 }
                 else if (repevs[i].events & EPOLLOUT) // 处理写入事件
                 {
