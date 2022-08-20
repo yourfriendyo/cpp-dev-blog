@@ -4,8 +4,8 @@
 #include <unordered_map>
 #include <sys/epoll.h>
 
-#define SIZE 128
-#define NUM 128
+#define EPOLL_SIZE 128
+#define EVENT_NUM 128
 
 // IO时，只有三种接口需要处理：处理读取，处理写入，处理异常
 
@@ -56,7 +56,7 @@ public:
     {}
 
     void InitReactor() {
-        _epfd = epoll_create(SIZE);
+        _epfd = epoll_create(EPOLL_SIZE);
         if (_epfd < 0) {
             std::cerr << "epoll_creater error" << std::endl;
             exit(2);
@@ -97,8 +97,8 @@ public:
     // 就绪事件派发器
     void Dispatcher(int timeout = -1)
     {
-        struct epoll_event revs[NUM];
-        int n = epoll_wait(_epfd, revs, NUM, timeout);
+        struct epoll_event revs[EVENT_NUM];
+        int n = epoll_wait(_epfd, revs, EVENT_NUM, timeout);
         for (int i = 0; i < n; i++)
         {
             int fd = revs[i].data.fd;

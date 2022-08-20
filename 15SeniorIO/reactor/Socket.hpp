@@ -7,8 +7,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 #define BACK_LOG 5
+#define BUFFER_SIZE 1024
 
 class TcpSocket
 {
@@ -69,6 +71,7 @@ public:
             std::cout << "connect success" << std::endl;
         }
     }
+
     static bool Send(int sock, std::string& buffer)
     {
         ssize_t s = send(sock, buffer.c_str(), buffer.size(), 0);
@@ -81,26 +84,35 @@ public:
         }
         else {
             std::cerr << "send error" << std::endl;
-            exit(7);
+            // exit(7);
         }
         return s > 0;
     }
-    static bool Recv(int sock, std::string& buffer)
+
+    static int Recv(int sock, std::string& buffer)
     {
         buffer.clear();
-        char tmp[1024];
-        ssize_t s = recv(sock, tmp, sizeof(tmp), 0);
-        if (s > 0) {
-            tmp[s] = 0;
-            buffer = tmp;
+        char tmp[BUFFER_SIZE];
+        while (true)
+        {
+            ssize_t s = recv(sock, tmp, sizeof(tmp) - 1, 0);
+            if (s > 0) {
+                tmp[s] = 0;
+                buffer += tmp;
+            }
+            else if (s < 0)
+            {
+                if (errno == EINTR) {                          //0. 被信号中断
+                    continue;
+                }
+                if (errno == EAGAIN || errno == EWOULDBLOCK) { //1. 读完了
+                    return 0;
+                }
+                return -1;                                     //2. 出错了
+            }
+            else {
+                return -1;                                     // 对端关闭
+            }
         }
-        else if (s == 0) {
-            std::cout << "Recv remote quit ..." << std::endl;
-        }
-        else {
-            std::cerr << "Recv error" << std::endl;
-            exit(8);
-        }
-        return s > 0;
     }
 };
