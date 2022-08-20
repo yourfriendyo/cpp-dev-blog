@@ -72,23 +72,39 @@ public:
         }
     }
 
-    static bool Send(int sock, std::string& buffer)
+    // 1: 全部发送完成
+    // 0: 数据没有发完，但不能继续
+    //-1: 发送失败
+    static int Send(int sock, std::string& buffer)
     {
-        ssize_t s = send(sock, buffer.c_str(), buffer.size(), 0);
-        if (s > 0) {
-            // TODO
-
+        const char* start = buffer.c_str();
+        int size = buffer.size();
+        ssize_t total = 0;
+        while (true)
+        {
+            ssize_t curr = send(sock, start + total, size - total, 0);
+            if (curr > 0) {
+                total += curr;
+                if (total == size) {
+                    buffer.clear();
+                    return 1;
+                }
+            }
+            else {
+                if (errno == EINTR)
+                    continue;
+                if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                    buffer.erase(0, total);
+                    return 0;
+                }
+                return -1;
+            }
         }
-        else if (s == 0) {
-            std::cout << "send remote quit ..." << std::endl;
-        }
-        else {
-            std::cerr << "send error" << std::endl;
-            // exit(7);
-        }
-        return s > 0;
     }
 
+    // 1: 全部接受完成
+    // 0: 数据没有收完，但不能继续
+    //-1: 接受失败
     static int Recv(int sock, std::string& buffer)
     {
         buffer.clear();
@@ -100,18 +116,16 @@ public:
                 tmp[s] = 0;
                 buffer += tmp;
             }
-            else if (s < 0)
-            {
-                if (errno == EINTR) {                          //0. 被信号中断
+            else if (s < 0) {
+                if (errno == EINTR)
                     continue;
-                }
                 if (errno == EAGAIN || errno == EWOULDBLOCK) { //1. 读完了
-                    return 0;
+                    return 1;
                 }
                 return -1;                                     //2. 出错了
             }
             else {
-                return -1;                                     // 对端关闭
+                return 0;
             }
         }
     }

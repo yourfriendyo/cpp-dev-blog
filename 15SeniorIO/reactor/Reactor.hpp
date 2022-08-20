@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <unistd.h>
 #include <sys/epoll.h>
 
 #define EPOLL_SIZE 128
@@ -41,7 +42,9 @@ public:
         _errorer = errorer;
     }
 
-    ~Event() {}
+    ~Event() {
+        close(_fd);
+    }
 };
 
 
@@ -82,13 +85,17 @@ public:
 
     void DeleteEvent(Event* evp) // 删除结构和关心的事件
     {
-        //1. 将fd及其事件在epfd中删除
-        epoll_ctl(_epfd, EPOLL_CTL_DEL, evp->_fd, nullptr);
-
-        //2. 将fd及其事件在map中删除
         auto iter = _events.find(evp->_fd);
-        if (iter != _events.end()) {
+        if (iter != _events.end())
+        {
+            //1. 将fd及其事件在epfd中删除
+            epoll_ctl(_epfd, EPOLL_CTL_DEL, evp->_fd, nullptr);
+
+            //2. 将fd及其事件在map中删除
             _events.erase(iter);
+
+            //3. 释放对象（fd析构释放）
+            delete evp;
         }
     }
 
@@ -121,16 +128,23 @@ public:
             if (revents & EPOLLERR)  revents |= (EPOLLIN | EPOLLOUT); // 事件出错转化为读写就绪
             if (revents & EPOLLHUP)  revents |= (EPOLLIN | EPOLLOUT); // 事件关闭转化为读写就绪
 
-            // 读就绪处理 BUG??
-            if (revents & EPOLLIN) {
+            // 读就绪处理
+            if (IsFdExist(fd) && revents & EPOLLIN) {
                 if (_events[fd]->_recver) _events[fd]->_recver(_events[fd]); // 调用接收回调
             }
             // 写就绪处理
-            if (revents & EPOLLOUT) {
+            if (IsFdExist(fd) && revents & EPOLLOUT) {
                 if (_events[fd]->_sender) _events[fd]->_sender(_events[fd]); // 调用发送回调
             }
         }
     }
 
-    ~Reactor() {}
+    bool IsFdExist(int fd)
+    {
+        return _events.find(fd) != _events.end();
+    }
+
+    ~Reactor() {
+        close(_epfd);
+    }
 };

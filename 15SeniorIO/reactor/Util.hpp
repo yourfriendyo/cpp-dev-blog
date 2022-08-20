@@ -6,7 +6,6 @@
 #include <fcntl.h>
 
 //工具类
-
 class Util
 {
 public:
@@ -26,6 +25,7 @@ public:
     // 1+
     static void SplitSegment(std::string& in_buffer, std::vector<std::string>* tokens, std::string sep)
     {
+        std::cout << "in_buffer:" << in_buffer << std::endl;
         while (true)
         {
             auto pos = in_buffer.find(sep);

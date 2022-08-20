@@ -4,22 +4,21 @@
 #include "Socket.hpp"
 #include "Util.hpp"
 
-
 int Recver(Event* evp)
 {
     std::cout << "Recver Callback has been called!" << std::endl;
 
     //1. 读取
     int result = TcpSocket::Recv(evp->_fd, evp->_in_buffer);
+
     // 差错处理
-    if (result < 0) {
+    if (result <= 0) {
         if (evp->_errorer)  evp->_errorer(evp);
         return -1;
     }
 
     //2. 分包 -- 只提取完整的报文，多余的放入缓冲区中
     //1+2X3+5X
-
     std::string sep = "X";
     std::vector<std::string> tokens;
     Util::SplitSegment(evp->_in_buffer, &tokens, sep);
@@ -54,10 +53,23 @@ int Sender(Event* evp)
 {
     std::cout << "Sender Callback has been called!" << std::endl;
 
+    int res = TcpSocket::Send(evp->_fd, evp->_out_buffer);
+    // 1: 全部发送完成
+    // 0: 数据没有发完，但不能继续
+    //-1: 发送失败
+    if (res == 1) {
+        evp->_R_ptr->ModifyEvent(evp, true, false);  // 关闭写就绪
+    }
+    else if (res == 0) {
+        evp->_R_ptr->ModifyEvent(evp, true, true);   // 重新发送
+    }
+    else {
+        if (evp->_errorer) evp->_errorer(evp);       // 差错处理
+    }
 }
 
 int Errorer(Event* evp)
 {
     std::cout << "Errorer Callback has been called!" << std::endl;
-
+    evp->_R_ptr->DeleteEvent(evp);
 }
