@@ -15,6 +15,8 @@ int Accepter(Event* evp)
             std::cout << "Accept Done!" << std::endl;
             break;
         }
+        std::cout << "Accept Success, fd: " << sock << std::endl;
+
         Util::SetNoBlock(sock); // 获取链接成功，设置非阻塞
 
         //构建Event事件柴火并添加到Reactor反应堆中
