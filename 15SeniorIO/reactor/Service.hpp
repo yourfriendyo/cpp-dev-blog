@@ -41,9 +41,13 @@ int Recver(Event* evp)
             evp->_out_buffer += res;
         }
     }
-    //6. 尝试直接或间接发送
-    //TODO
 
+    //6. 尝试直接或间接发送
+    //不一定等写事件就绪后才能发送，一般写事件通常都是就绪的，只要数据处理完毕就可以发送，对于写事件一般按需设置
+    if (!evp->_out_buffer.empty()) {
+        evp->_R_ptr->ModifyEvent(evp, true, true);
+        // 一般打开写事件就就绪了
+    }
 }
 
 int Sender(Event* evp)

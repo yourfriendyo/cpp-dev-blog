@@ -92,7 +92,21 @@ public:
         }
     }
 
-    void ModifyEvent() {} //TODO
+    bool ModifyEvent(Event* evp, bool en_read = false, bool en_write = false)
+    {
+        evp->_events = EPOLLET | (en_read ? EPOLLIN : 0) | (en_write ? EPOLLOUT : 0);
+
+        struct epoll_event ev;
+        ev.data.fd = evp->_fd;
+        ev.events = evp->_events;
+
+        if (epoll_ctl(_epfd, EPOLL_CTL_MOD, ev.data.fd, &ev) < 0) {
+            std::cout << "Modify Event failed" << std::endl;
+            return false;
+        }
+        return true;;
+
+    }
 
     // 就绪事件派发器
     void Dispatcher(int timeout = -1)
