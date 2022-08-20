@@ -7,20 +7,19 @@
 int Accepter(Event* evp)
 {
     std::cout << "有新链接到来，就绪fd为: " << evp->_fd << std::endl;
-    int fd = evp->_fd;
 
     while (true)
     {
-        int sock = TcpSocket::Accept(fd);
+        int sock = TcpSocket::Accept(evp->_fd);
         if (sock <= 0) {
-            std::cout << "Accept done!" << std::endl;
+            std::cout << "Accept Done!" << std::endl;
             break;
         }
-        Util::SetNoBlock(sock);
-        //获取链接成功
-        Event* new_evp = new Event(sock, EPOLLIN | EPOLLET, evp->_R_ptr);
+        Util::SetNoBlock(sock); // 获取链接成功，设置非阻塞
 
-        new_evp->RegisterCallBack(Recver, Sender, Errorer);
+        //构建Event事件柴火并添加到Reactor反应堆中
+        Event* new_evp = new Event(sock, EPOLLIN | EPOLLET, evp->_R_ptr);
+        new_evp->RegisterCallback(Recver, Sender, Errorer);
 
         evp->_R_ptr->InsertEvent(new_evp);
 

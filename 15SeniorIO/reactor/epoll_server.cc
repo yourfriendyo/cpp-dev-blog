@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
         Usage(argv[0]);
     }
     uint16_t port = atoi(argv[1]);
+
     //1. 创建套接字
     int listen_sock = TcpSocket::Socket();
     Util::SetNoBlock(listen_sock); // 设置非阻塞
@@ -27,7 +28,7 @@ int main(int argc, char* argv[])
     //3. 给Reactor反应堆加柴火
     Event* evp = new Event(listen_sock, EPOLLIN | EPOLLET, R_ptr);
 
-    evp->RegisterCallBack(Accepter, nullptr, nullptr); // Accepter链接管理器
+    evp->RegisterCallback(Accepter, nullptr, nullptr); // Accepter连接管理器
 
     R_ptr->InsertEvent(evp);
 

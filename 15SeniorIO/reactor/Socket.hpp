@@ -48,10 +48,10 @@ public:
         struct sockaddr_in peer;
         socklen_t len = sizeof(peer);
         int new_sock = accept(sock, (struct sockaddr*)&peer, &len);
-        if (new_sock <= 0) {
-            std::cerr << "accept error" << std::endl;
-            // exit(5);
-        }
+        // if (new_sock <= 0) {
+        //    std::cerr << "accept error" << std::endl;
+        //    exit(5);
+        // }
         return new_sock;
     }
     static void Connect(int sock, const std::string& ip, int16_t port)

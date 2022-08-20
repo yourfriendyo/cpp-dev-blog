@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <sys/epoll.h>
+
 #define SIZE 128
 #define NUM 128
 
@@ -34,7 +35,7 @@ public:
         _recver(nullptr), _sender(nullptr), _errorer(nullptr)
     {}
 
-    void RegisterCallBack(callback_t recver, callback_t sender, callback_t errorer) {
+    void RegisterCallback(callback_t recver, callback_t sender, callback_t errorer) {
         _recver = recver;
         _sender = sender;
         _errorer = errorer;
@@ -60,7 +61,7 @@ public:
             std::cerr << "epoll_creater error" << std::endl;
             exit(2);
         }
-        std::cerr << "epoll_creater success" << std::endl;
+        std::cout << "epoll_creater success" << std::endl;
     }
 
     bool InsertEvent(Event* evp) // 插入结构和关心的事件
@@ -74,29 +75,27 @@ public:
             std::cerr << "epoll_ctl failed" << std::endl;
             return false;
         }
-        else {
-            std::cerr << "epoll_ctl success" << std::endl;
-        }
+        std::cout << "epoll_ctl success" << std::endl;
         //2. 将ev本身插入到map中
         _events.insert({ evp->_fd, evp });
     }
 
     void DeleteEvent(Event* evp) // 删除结构和关心的事件
     {
-        int fd = evp->_fd;
         //1. 将fd及其事件在epfd中删除
-        epoll_ctl(_epfd, EPOLL_CTL_DEL, fd, nullptr);
+        epoll_ctl(_epfd, EPOLL_CTL_DEL, evp->_fd, nullptr);
 
         //2. 将fd及其事件在map中删除
-        auto iter = _events.find(fd);
+        auto iter = _events.find(evp->_fd);
         if (iter != _events.end()) {
             _events.erase(iter);
         }
     }
+
     void ModifyEvent() {} //TODO
 
     // 就绪事件派发器
-    void Dispatcher(int timeout)
+    void Dispatcher(int timeout = -1)
     {
         struct epoll_event revs[NUM];
         int n = epoll_wait(_epfd, revs, NUM, timeout);
@@ -105,19 +104,18 @@ public:
             int fd = revs[i].data.fd;
             uint32_t revents = revs[i].events;
             // 差错处理
-            if (revents & EPOLLERR) revents |= (EPOLLIN | EPOLLOUT); // 事件出错认为是读写就绪
-            if (revents & EPOLLHUP) revents |= (EPOLLIN | EPOLLOUT); // 事件关闭认为是读写就绪
+            if (revents & EPOLLERR)  revents |= (EPOLLIN | EPOLLOUT); // 事件出错转化为读写就绪
+            if (revents & EPOLLHUP)  revents |= (EPOLLIN | EPOLLOUT); // 事件关闭转化为读写就绪
 
             // 读就绪处理 BUG??
             if (revents & EPOLLIN) {
-                if (_events[fd]->_recver) _events[fd]->_recver(_events[fd]); // 调用回调机制
+                if (_events[fd]->_recver) _events[fd]->_recver(_events[fd]); // 调用接收回调
             }
             // 写就绪处理
             if (revents & EPOLLOUT) {
-                if (_events[fd]->_sender) _events[fd]->_sender(_events[fd]); // 调用回调机制
+                if (_events[fd]->_sender) _events[fd]->_sender(_events[fd]); // 调用发送回调
             }
         }
-
     }
 
     ~Reactor() {}
