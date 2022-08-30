@@ -71,7 +71,7 @@ public:
             {
                 curr = curr->_left;
             }
-            else if
+            else
             {
                 return true;
             }
@@ -91,7 +91,7 @@ public:
                 parent = curr;
                 curr = curr->_right;
             }
-            if (curr->_key > key)
+            else if (curr->_key > key)  /**  这里else没写，bug找了几个小时  **/
             {
                 parent = curr;
                 curr = curr->_left;
@@ -105,10 +105,12 @@ public:
                         _root = _root->_right;
                     }
                     else {
-                        if (parent->_left == curr)
+                        if (parent->_left == curr) {
                             parent->_left = curr->_right;
-                        else
+                        }
+                        else {
                             parent->_right = curr->_right;
+                        }
                     }
                     delete curr;
                 }
@@ -141,7 +143,7 @@ public:
                     curr->_key = max->_key; // 覆盖到目标位置
 
                     // 维护链接关系
-                    if (maxParent->_right == min)
+                    if (maxParent->_right == max)
                         maxParent->_right = max->_left;
                     else // 特殊情况左子树的最右节点正好就是左节点
                         maxParent->_left = max->_left;
@@ -167,6 +169,7 @@ public:
     void InOrder()
     {
         _InOrder(_root);
+        std::cout << std::endl;
     }
 
 private:
@@ -177,13 +180,25 @@ private:
 void TestBSTree()
 {
     BSTree<int> t;
-    int a[] = { 5,3,5,1,7,8,2,6,0,9 };
+    int a[] = { 5,3,4,1,7,8,2,6,0,9 };
 
     for (auto e : a)
     {
         t.Insert(e);
     }
-
     t.InOrder();
 
+    // t.Erase(7);
+    // t.InOrder();
+
+    // t.Erase(5);
+    // t.InOrder();
+
+    // t.Erase(0);
+    // t.InOrder();
+
+    for (auto e : a) {
+        t.Erase(e);
+        t.InOrder();
+    }
 }
