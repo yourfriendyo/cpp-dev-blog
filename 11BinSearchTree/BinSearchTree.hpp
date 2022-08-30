@@ -156,6 +156,52 @@ public:
         return false;
     }
 
+
+    bool InsertR(const K& key)
+    {
+        _InsertR(_root, key);
+    }
+
+    void InOrder()
+    {
+        _InOrder(_root);
+        std::cout << std::endl;
+    }
+
+    Node* FindR(const K& key)
+    {
+        _FindR(_root, key);
+    }
+
+private:
+    bool _InsertR(Node*& root, const K& key)
+    {
+        if (root == nullptr) {
+            root = new Node(key);
+            return true;
+        }
+
+        if (root->_key < key)
+            return _InsertR(root->_right, key);
+        else if (root->_key > key)
+            return _InsertR(root->_left, key);
+        else
+            return false;
+    }
+
+    Node* _FindR(Node* root, const K& key)
+    {
+        if (root == nullptr)
+            return root;
+
+        if (root->_key < key)
+            _FindR(root->_right);
+        else if (root->_key > key)
+            _FindR(root->_left);
+        else
+            return root;
+    }
+
     void _InOrder(Node* root)
     {
         if (root == nullptr) {
@@ -165,11 +211,6 @@ public:
         _InOrder(root->_left);
         std::cout << root->_key << " ";
         _InOrder(root->_right);
-    }
-    void InOrder()
-    {
-        _InOrder(_root);
-        std::cout << std::endl;
     }
 
 private:
@@ -184,7 +225,7 @@ void TestBSTree()
 
     for (auto e : a)
     {
-        t.Insert(e);
+        t.InsertR(e);
     }
     t.InOrder();
 
@@ -197,8 +238,8 @@ void TestBSTree()
     // t.Erase(0);
     // t.InOrder();
 
-    for (auto e : a) {
-        t.Erase(e);
-        t.InOrder();
-    }
+    // for (auto e : a) {
+        // t.Erase(e);
+        // t.InOrder();
+    // }
 }
