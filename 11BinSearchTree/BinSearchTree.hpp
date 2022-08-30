@@ -47,7 +47,8 @@ public:
                 return false;
             }
         }
-        if (parent->_key < key) {
+        if (parent->_key < key)
+        {
             parent->_right = new Node(key);
         }
         else {
@@ -80,13 +81,82 @@ public:
 
     bool Erase(const K& key)
     {
+        Node* parent = nullptr;
+        Node* curr = _root;
 
+        while (curr)
+        {
+            if (curr->_key < key)
+            {
+                parent = curr;
+                curr = curr->_right;
+            }
+            if (curr->_key > key)
+            {
+                parent = curr;
+                curr = curr->_left;
+            }
+            else {
+                // 简单删除
+                if (curr->_left == nullptr) /* 左子树为空 */
+                {
+                    // 删除头节点特殊情况
+                    if (curr == _root) {
+                        _root = _root->_right;
+                    }
+                    else {
+                        if (parent->_left == curr)
+                            parent->_left = curr->_right;
+                        else
+                            parent->_right = curr->_right;
+                    }
+                    delete curr;
+                }
+                else if (curr->_right == nullptr) /* 左子树存在，右子树为空 */
+                {
+                    // 删除头节点特殊情况
+                    if (curr == _root) {
+                        _root = _root->_left;
+                    }
+                    else {
+                        if (parent->_left == curr)
+                            parent->_left = curr->_left;
+                        else
+                            parent->_right = curr->_left;
+                    }
+                    delete curr;
+                }
+                // 替换法删除
+                else /* 左右子树都存在 */
+                {
+                    Node* maxParent = curr;
+                    Node* max = curr->_left;
+                    // 拿到整棵树的左子树的最右节点
+                    while (max->_right)
+                    {
+                        maxParent = max;
+                        max = max->_right;
+                    }
+
+                    curr->_key = max->_key; // 覆盖到目标位置
+
+                    // 维护链接关系
+                    if (maxParent->_right == min)
+                        maxParent->_right = max->_left;
+                    else // 特殊情况左子树的最右节点正好就是左节点
+                        maxParent->_left = max->_left;
+
+                    delete max;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     void _InOrder(Node* root)
     {
-        if (root == nullptr)
-        {
+        if (root == nullptr) {
             return;
         }
 
