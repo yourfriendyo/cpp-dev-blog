@@ -5,7 +5,9 @@
 
 int main()
 {
-    K::TestBSTree();
+    // K::TestBSTree();
+
+    KV::TestBSTree2();
 
     return 0;
 }
