@@ -159,7 +159,7 @@ public:
 
     bool InsertR(const K& key)
     {
-        _InsertR(_root, key);
+        return _InsertR(_root, key);
     }
 
     void InOrder()
@@ -170,10 +170,57 @@ public:
 
     Node* FindR(const K& key)
     {
-        _FindR(_root, key);
+        return _FindR(_root, key);
+    }
+
+    bool EraseR(const K& key)
+    {
+        return _EraseR(_root, key);
     }
 
 private:
+
+    bool _EraseR(Node*& root, const K& key)
+    {
+        if (root == nullptr)
+            return false;
+
+        if (root->_key < key)
+        {
+            return _EraseR(root->_right, key);
+        }
+        else if (root->_key > key)
+        {
+            return _EraseR(root->_left, key);
+        }
+        else
+        {
+            Node* del = root;
+            if (root->_left == nullptr)
+            {
+                root = root->_right;
+            }
+            else if (root->_right == nullptr)
+            {
+                root = root->_left;
+            }
+            else
+            {
+                Node* max = root->_left;
+                while (max->_right)
+                {
+                    max = max->_right;
+                }
+
+                root->_key = max->_key;
+                return _EraseR(root->_left, max->_key); // 子树中再递归删除
+                // return _EraseR(max, max->_key); // 子树中再递归删除
+            }
+            delete del;
+            return true;
+        }
+    }
+
     bool _InsertR(Node*& root, const K& key)
     {
         if (root == nullptr) {
@@ -238,8 +285,8 @@ void TestBSTree()
     // t.Erase(0);
     // t.InOrder();
 
-    // for (auto e : a) {
-        // t.Erase(e);
-        // t.InOrder();
-    // }
+    for (auto e : a) {
+        t.EraseR(e);
+        t.InOrder();
+    }
 }
