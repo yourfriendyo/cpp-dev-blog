@@ -129,7 +129,7 @@ namespace K
                         }
                         delete curr;
                     }
-                    // 替换法删除
+                        // 替换法删除
                     else /* 左右子树都存在 */
                     {
                         Node* maxParent = curr;
@@ -303,7 +303,7 @@ namespace KV
         K _key;
         V _value;
         BSTNode(const K& key, const V& value)
-            : _left(nullptr), _right(nullptr), _key(key), _value(value)
+                : _left(nullptr), _right(nullptr), _key(key), _value(value)
         {}
     };
 
@@ -422,7 +422,7 @@ namespace KV
                         }
                         delete curr;
                     }
-                    // 替换法删除
+                        // 替换法删除
                     else /* 左右子树都存在 */
                     {
                         Node* maxParent = curr;
