@@ -5,7 +5,7 @@
 
 int main()
 {
-    TestBSTree();
+    K::TestBSTree();
 
     return 0;
 }

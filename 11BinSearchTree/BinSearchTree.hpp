@@ -1,292 +1,456 @@
 #pragma once
 #include <iostream>
 
-
-template <class K>
-struct BSTNode
+namespace K
 {
-    BSTNode<K>* _left;
-    BSTNode<K>* _right;
-    K _key;
-    BSTNode(const K& key) : _left(nullptr), _right(nullptr), _key(key)
-    {}
-};
-
-template <class K>
-class BSTree
-{
-    typedef BSTNode<K> Node;
-public:
-    BSTree() : _root(nullptr)
-    {}
-
-    bool Insert(const K& key)
+    template <class K>
+    struct BSTNode
     {
-        if (_root == nullptr)
+        BSTNode<K>* _left;
+        BSTNode<K>* _right;
+        K _key;
+        BSTNode(const K& key) : _left(nullptr), _right(nullptr), _key(key)
+        {}
+    };
+
+    template <class K>
+    class BSTree
+    {
+        typedef BSTNode<K> Node;
+    public:
+        BSTree() : _root(nullptr)
+        {}
+
+        bool Insert(const K& key)
         {
-            _root = new Node(key);
+            if (_root == nullptr)
+            {
+                _root = new Node(key);
+                return true;
+            }
+
+            Node* parent = nullptr;
+            Node* curr = _root;
+
+            while (curr)
+            {
+                if (curr->_key < key)
+                {
+                    parent = curr;
+                    curr = curr->_right;
+                }
+                else if (curr->_key > key)
+                {
+                    parent = curr;
+                    curr = curr->_left;
+                }
+                else {
+                    return false;
+                }
+            }
+            if (parent->_key < key)
+            {
+                parent->_right = new Node(key);
+            }
+            else {
+                parent->_left = new Node(key);
+            }
+
             return true;
         }
 
-        Node* parent = nullptr;
-        Node* curr = _root;
-
-        while (curr)
+        bool Find(const K& key)
         {
-            if (curr->_key < key)
+            Node* curr = _root;
+            while (curr)
             {
-                parent = curr;
-                curr = curr->_right;
+                if (curr->_key < key)
+                {
+                    curr = curr->_right;
+                }
+                else if (curr->_key > key)
+                {
+                    curr = curr->_left;
+                }
+                else
+                {
+                    return true;
+                }
             }
-            else if (curr->_key > key)
+            return false;
+        }
+
+        bool Erase(const K& key)
+        {
+            Node* parent = nullptr;
+            Node* curr = _root;
+
+            while (curr)
             {
-                parent = curr;
-                curr = curr->_left;
+                if (curr->_key < key)
+                {
+                    parent = curr;
+                    curr = curr->_right;
+                }
+                else if (curr->_key > key)  /**  这里else没写，bug找了几个小时  **/
+                {
+                    parent = curr;
+                    curr = curr->_left;
+                }
+                else {
+                    // 简单删除
+                    if (curr->_left == nullptr) /* 左子树为空 */
+                    {
+                        // 删除头节点特殊情况
+                        if (curr == _root) {
+                            _root = _root->_right;
+                        }
+                        else {
+                            if (parent->_left == curr) {
+                                parent->_left = curr->_right;
+                            }
+                            else {
+                                parent->_right = curr->_right;
+                            }
+                        }
+                        delete curr;
+                    }
+                    else if (curr->_right == nullptr) /* 左子树存在，右子树为空 */
+                    {
+                        // 删除头节点特殊情况
+                        if (curr == _root) {
+                            _root = _root->_left;
+                        }
+                        else {
+                            if (parent->_left == curr)
+                                parent->_left = curr->_left;
+                            else
+                                parent->_right = curr->_left;
+                        }
+                        delete curr;
+                    }
+                    // 替换法删除
+                    else /* 左右子树都存在 */
+                    {
+                        Node* maxParent = curr;
+                        Node* max = curr->_left;
+                        // 拿到整棵树的左子树的最右节点
+                        while (max->_right)
+                        {
+                            maxParent = max;
+                            max = max->_right;
+                        }
+
+                        curr->_key = max->_key; // 覆盖到目标位置
+
+                        // 维护链接关系
+                        if (maxParent->_right == max)
+                            maxParent->_right = max->_left;
+                        else // 特殊情况左子树的最右节点正好就是左节点
+                            maxParent->_left = max->_left;
+
+                        delete max;
+                    }
+                    return true;
+                }
             }
-            else {
+            return false;
+        }
+
+
+        bool InsertR(const K& key)
+        {
+            return _InsertR(_root, key);
+        }
+
+        void InOrder()
+        {
+            _InOrder(_root);
+            std::cout << std::endl;
+        }
+
+        Node* FindR(const K& key)
+        {
+            return _FindR(_root, key);
+        }
+
+        bool EraseR(const K& key)
+        {
+            return _EraseR(_root, key);
+        }
+
+    private:
+
+        bool _EraseR(Node*& root, const K& key)
+        {
+            if (root == nullptr)
                 return false;
-            }
-        }
-        if (parent->_key < key)
-        {
-            parent->_right = new Node(key);
-        }
-        else {
-            parent->_left = new Node(key);
-        }
 
-        return true;
-    }
-
-    bool Find(const K& key)
-    {
-        Node* curr = _root;
-        while (curr)
-        {
-            if (curr->_key < key)
+            if (root->_key < key)
             {
-                curr = curr->_right;
+                return _EraseR(root->_right, key);
             }
-            else if (curr->_key > key)
+            else if (root->_key > key)
             {
-                curr = curr->_left;
+                return _EraseR(root->_left, key);
             }
             else
             {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    bool Erase(const K& key)
-    {
-        Node* parent = nullptr;
-        Node* curr = _root;
-
-        while (curr)
-        {
-            if (curr->_key < key)
-            {
-                parent = curr;
-                curr = curr->_right;
-            }
-            else if (curr->_key > key)  /**  这里else没写，bug找了几个小时  **/
-            {
-                parent = curr;
-                curr = curr->_left;
-            }
-            else {
-                // 简单删除
-                if (curr->_left == nullptr) /* 左子树为空 */
+                Node* del = root;
+                if (root->_left == nullptr)
                 {
-                    // 删除头节点特殊情况
-                    if (curr == _root) {
-                        _root = _root->_right;
-                    }
-                    else {
-                        if (parent->_left == curr) {
-                            parent->_left = curr->_right;
-                        }
-                        else {
-                            parent->_right = curr->_right;
-                        }
-                    }
-                    delete curr;
+                    root = root->_right;
                 }
-                else if (curr->_right == nullptr) /* 左子树存在，右子树为空 */
+                else if (root->_right == nullptr)
                 {
-                    // 删除头节点特殊情况
-                    if (curr == _root) {
-                        _root = _root->_left;
-                    }
-                    else {
-                        if (parent->_left == curr)
-                            parent->_left = curr->_left;
-                        else
-                            parent->_right = curr->_left;
-                    }
-                    delete curr;
+                    root = root->_left;
                 }
-                // 替换法删除
-                else /* 左右子树都存在 */
+                else
                 {
-                    Node* maxParent = curr;
-                    Node* max = curr->_left;
-                    // 拿到整棵树的左子树的最右节点
+                    Node* max = root->_left;
                     while (max->_right)
                     {
-                        maxParent = max;
                         max = max->_right;
                     }
 
-                    curr->_key = max->_key; // 覆盖到目标位置
-
-                    // 维护链接关系
-                    if (maxParent->_right == max)
-                        maxParent->_right = max->_left;
-                    else // 特殊情况左子树的最右节点正好就是左节点
-                        maxParent->_left = max->_left;
-
-                    delete max;
+                    root->_key = max->_key;
+                    return _EraseR(root->_left, max->_key); // 子树中再递归删除
+                    // return _EraseR(max, max->_key); // 子树中再递归删除
                 }
+                delete del;
                 return true;
             }
         }
-        return false;
-    }
 
-
-    bool InsertR(const K& key)
-    {
-        return _InsertR(_root, key);
-    }
-
-    void InOrder()
-    {
-        _InOrder(_root);
-        std::cout << std::endl;
-    }
-
-    Node* FindR(const K& key)
-    {
-        return _FindR(_root, key);
-    }
-
-    bool EraseR(const K& key)
-    {
-        return _EraseR(_root, key);
-    }
-
-private:
-
-    bool _EraseR(Node*& root, const K& key)
-    {
-        if (root == nullptr)
-            return false;
-
-        if (root->_key < key)
+        bool _InsertR(Node*& root, const K& key)
         {
-            return _EraseR(root->_right, key);
-        }
-        else if (root->_key > key)
-        {
-            return _EraseR(root->_left, key);
-        }
-        else
-        {
-            Node* del = root;
-            if (root->_left == nullptr)
-            {
-                root = root->_right;
+            if (root == nullptr) {
+                root = new Node(key);
+                return true;
             }
-            else if (root->_right == nullptr)
-            {
-                root = root->_left;
-            }
+
+            if (root->_key < key)
+                return _InsertR(root->_right, key);
+            else if (root->_key > key)
+                return _InsertR(root->_left, key);
             else
-            {
-                Node* max = root->_left;
-                while (max->_right)
-                {
-                    max = max->_right;
-                }
+                return false;
+        }
 
-                root->_key = max->_key;
-                return _EraseR(root->_left, max->_key); // 子树中再递归删除
-                // return _EraseR(max, max->_key); // 子树中再递归删除
+        Node* _FindR(Node* root, const K& key)
+        {
+            if (root == nullptr)
+                return root;
+
+            if (root->_key < key)
+                _FindR(root->_right);
+            else if (root->_key > key)
+                _FindR(root->_left);
+            else
+                return root;
+        }
+
+        void _InOrder(Node* root)
+        {
+            if (root == nullptr) {
+                return;
             }
-            delete del;
-            return true;
-        }
-    }
 
-    bool _InsertR(Node*& root, const K& key)
-    {
-        if (root == nullptr) {
-            root = new Node(key);
-            return true;
+            _InOrder(root->_left);
+            std::cout << root->_key << " ";
+            _InOrder(root->_right);
         }
 
-        if (root->_key < key)
-            return _InsertR(root->_right, key);
-        else if (root->_key > key)
-            return _InsertR(root->_left, key);
-        else
-            return false;
-    }
+    private:
+        Node* _root;
 
-    Node* _FindR(Node* root, const K& key)
+    };
+
+    void TestBSTree()
     {
-        if (root == nullptr)
-            return root;
+        BSTree<int> t;
+        int a[] = { 5,3,4,1,7,8,2,6,0,9 };
 
-        if (root->_key < key)
-            _FindR(root->_right);
-        else if (root->_key > key)
-            _FindR(root->_left);
-        else
-            return root;
-    }
-
-    void _InOrder(Node* root)
-    {
-        if (root == nullptr) {
-            return;
+        for (auto e : a)
+        {
+            t.InsertR(e);
         }
-
-        _InOrder(root->_left);
-        std::cout << root->_key << " ";
-        _InOrder(root->_right);
-    }
-
-private:
-    Node* _root;
-
-};
-
-void TestBSTree()
-{
-    BSTree<int> t;
-    int a[] = { 5,3,4,1,7,8,2,6,0,9 };
-
-    for (auto e : a)
-    {
-        t.InsertR(e);
-    }
-    t.InOrder();
-
-    // t.Erase(7);
-    // t.InOrder();
-
-    // t.Erase(5);
-    // t.InOrder();
-
-    // t.Erase(0);
-    // t.InOrder();
-
-    for (auto e : a) {
-        t.EraseR(e);
         t.InOrder();
+
+        // t.Erase(7);
+        // t.InOrder();
+
+        // t.Erase(5);
+        // t.InOrder();
+
+        // t.Erase(0);
+        // t.InOrder();
+
+        for (auto e : a) {
+            t.EraseR(e);
+            t.InOrder();
+        }
     }
+}
+
+namespace KV
+{
+    template <class K, class V>
+    struct BSTNode
+    {
+        BSTNode<K, V>* _left;
+        BSTNode<K, V>* _right;
+        K _key;
+        V _value;
+        BSTNode(const K& key, const K& value)
+            : _left(nullptr), _right(nullptr), _key(key), _value(value)
+        {}
+    };
+
+    template <class K, class V>
+    class BSTree
+    {
+        typedef BSTNode<K, V> Node;
+    public:
+        BSTree() : _root(nullptr)
+        {}
+
+        bool Insert(const K& key, const V& value)
+        {
+            if (_root == nullptr)
+            {
+                _root = new Node(key, value);
+                return true;
+            }
+
+            Node* parent = nullptr;
+            Node* curr = _root;
+
+            while (curr)
+            {
+                if (curr->_key < key)
+                {
+                    parent = curr;
+                    curr = curr->_right;
+                }
+                else if (curr->_key > key)
+                {
+                    parent = curr;
+                    curr = curr->_left;
+                }
+                else {
+                    return false;
+                }
+            }
+            if (parent->_key < key) {
+                parent->_right = new Node(key, value);
+            }
+            else {
+                parent->_left = new Node(key, value);
+            }
+
+            return true;
+        }
+
+        Node* Find(const K& key)
+        {
+            Node* curr = _root;
+            while (curr)
+            {
+                if (curr->_key < key)
+                {
+                    curr = curr->_right;
+                }
+                else if (curr->_key > key)
+                {
+                    curr = curr->_left;
+                }
+                else
+                {
+                    return curr;
+                }
+            }
+            return nullptr;
+        }
+
+        bool Erase(const K& key)
+        {
+            Node* parent = nullptr;
+            Node* curr = _root;
+
+            while (curr)
+            {
+                if (curr->_key < key)
+                {
+                    parent = curr;
+                    curr = curr->_right;
+                }
+                else if (curr->_key > key)  /**  这里else没写，bug找了几个小时  **/
+                {
+                    parent = curr;
+                    curr = curr->_left;
+                }
+                else {
+                    // 简单删除
+                    if (curr->_left == nullptr) /* 左子树为空 */
+                    {
+                        // 删除头节点特殊情况
+                        if (curr == _root) {
+                            _root = _root->_right;
+                        }
+                        else {
+                            if (parent->_left == curr) {
+                                parent->_left = curr->_right;
+                            }
+                            else {
+                                parent->_right = curr->_right;
+                            }
+                        }
+                        delete curr;
+                    }
+                    else if (curr->_right == nullptr) /* 左子树存在，右子树为空 */
+                    {
+                        // 删除头节点特殊情况
+                        if (curr == _root) {
+                            _root = _root->_left;
+                        }
+                        else {
+                            if (parent->_left == curr)
+                                parent->_left = curr->_left;
+                            else
+                                parent->_right = curr->_left;
+                        }
+                        delete curr;
+                    }
+                    // 替换法删除
+                    else /* 左右子树都存在 */
+                    {
+                        Node* maxParent = curr;
+                        Node* max = curr->_left;
+                        // 拿到整棵树的左子树的最右节点
+                        while (max->_right)
+                        {
+                            maxParent = max;
+                            max = max->_right;
+                        }
+                        // 覆盖到目标位置
+                        curr->_key = max->_key;
+                        curr->_value = max->_value;
+
+                        // 维护链接关系
+                        if (maxParent->_right == max)
+                            maxParent->_right = max->_left;
+                        else // 特殊情况左子树的最右节点正好就是左节点
+                            maxParent->_left = max->_left;
+
+                        delete max;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+    };
 }
