@@ -1,5 +1,4 @@
-#! /bin/bash
-cd ~/IN-THE-HOUSE
+#! /bin/zsh
 echo "########## 本地库状态 ##########"
 git status
 echo "########## 本地库状态 ##########"
@@ -9,7 +8,6 @@ read -r -p "请输入COMMIT信息：" input
 git add .
 git commit -m "${input}"
 git push
-# https://gitee.com/yourfriendyo/IN-THE-HOUSE/tree/Linux/
 
 echo "########## 提交成功 ##########"
 
