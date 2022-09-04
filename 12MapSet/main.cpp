@@ -5,6 +5,7 @@
 #include <map>
 #include <queue>
 #include <algorithm>
+#include "AVLTree.hpp"
 
 using namespace std;
 
@@ -271,22 +272,25 @@ void GetFavoriteFruit(vector<string> &fruits, size_t k) {
     }
     cout << endl;
 
-
-
 }
 
 
-int main() {
+int main() 
+{
 //    TestSet1();
 //    TestMultiSet();
 //    TestMap();
 //    TestMap2();
 //    TestMap3();
 //    TestMultiMap();
+//    vector<string> v = {"i","love","leetcode","i","love","coding"};
+//    Solution().topKFrequent(v, 2);
+//
+//    vector<string> fruits = {"苹果", "苹果", "香蕉", "菠萝", "橘子", "橙子", "栗子"};
+//    GetFavoriteFruit(fruits, 2);
 
-    vector<string> fruits = {"苹果", "苹果", "香蕉", "菠萝", "橘子", "橙子", "栗子"};
-    GetFavoriteFruit(fruits, 2);
 
+    TestAVLTree();
 
     return 0;
 
