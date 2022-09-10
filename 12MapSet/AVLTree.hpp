@@ -93,6 +93,7 @@ public:
             }
             else if (parent->_bf == 2 || parent->_bf == -2) // 平衡被打破，开始旋转
             {
+                RotateR(parent);
             }
             else { // 树构建出错
                 assert(false);
@@ -102,10 +103,42 @@ public:
         return true;
     }
 
-    // bool RotateR();
-    // bool RotateL();
-    // bool RotateRL();
-    // bool RotateLR();
+    // 右单旋
+    bool RotateR(Node* parent)
+    {
+        Node* left_child = parent->_left;
+        Node* parentP = parent->_parent;
+
+        if (parent == _root)
+        {
+            _root = left_child;
+            left_child->_parent = parentP;
+        }
+        else
+        {
+            if (parentP->_left == parent)
+                parentP->_left = left_child;
+            else
+                parentP->_right = left_child;
+            left_child->_parent = parentP;
+        }
+
+        parent->_left = left_child->_right;
+        if (left_child->_right) {
+            left_child->_right->_parent = parent;
+        }
+
+        left_child->_right = parent;
+        parent->_parent = left_child;
+    }
+
+    bool RotateL(Node* parent)
+    {
+
+    }
+
+    bool RotateRL(Node* parent);
+    bool RotateLR(Node* parent);
 
 private:
     Node* _root;
@@ -116,7 +149,7 @@ void TestAVLTree()
 {
     AVLTree<int, int>* avl = new AVLTree<int, int>();
 
-    int a[] = { 2, 1, 3 };
+    int a[] = { 3, 2, 1 };
 
     for (auto e : a)
     {
