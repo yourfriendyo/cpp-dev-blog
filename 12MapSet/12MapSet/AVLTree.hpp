@@ -93,7 +93,10 @@ public:
             }
             else if (parent->_bf == 2 || parent->_bf == -2) // ƽ�ⱻ���ƣ���ʼ��ת
             {
-                RotateR(parent);
+                if (parent->_bf == -2 || cur->_bf == -1) {
+                    RotateR(parent);
+                }
+                break;
             }
             else { // ����������
                 assert(false);
@@ -106,30 +109,35 @@ public:
     // �ҵ���
     void RotateR(Node* parent)
     {
-        Node* left_child = parent->_left;
+        Node* subL = parent->_left;
+        Node* subLR = subL->_right;
+
+        // 右子树作父节点的左子树
+        parent->_left = subLR;
+        if (subLR)
+            subLR->_parent = parent;
+
+        // 父节点作当前节点的右子树
+        subL->_right = parent;
+        parent->_parent = subL;
+
+        // 更新根节点或链接爷节点
         Node* parentP = parent->_parent;
 
         if (parent == _root)
-        {
-            _root = left_child;
-            left_child->_parent = parentP;
-        }
+            _root = subL;
         else
         {
             if (parentP->_left == parent)
-                parentP->_left = left_child;
+                parentP->_left = subL;
             else
-                parentP->_right = left_child;
-            left_child->_parent = parentP;
+                parentP->_right = subL;
         }
+        subL->_parent = parentP; // 维护三叉链
 
-        parent->_left = left_child->_right;
-        if (left_child->_right) {
-            left_child->_right->_parent = parent;
-        }
-
-        left_child->_right = parent;
-        parent->_parent = left_child;
+        // 更新平衡因子
+        subL->_bf = 0;
+        parent._bf = 0;
     }
 
 
@@ -142,7 +150,7 @@ void TestAVLTree()
 {
     AVLTree<int, int>* avl = new AVLTree<int, int>();
 
-    int a[] = { 3, 2, 1 };
+    int a[] = { 5, 4, 3, 2, 1 };
 
     for (auto e : a)
     {

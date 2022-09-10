@@ -11,4 +11,8 @@ x64/
 .vs/
 *.vcxproj
 *.filters
+<<<<<<< HEAD
 *.user
+=======
+*.user
+>>>>>>> 468be22ff3f1680278c22c0fd1fc509b8e4faed2
