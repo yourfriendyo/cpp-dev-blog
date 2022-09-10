@@ -33,12 +33,12 @@ public:
     {
         if (_root == nullptr)
         {
-            _root = new Node(kv); 
+            _root = new Node(kv);
             return true;
         }
 
         Node* parent = nullptr;
-        Node* curr = _root; 
+        Node* curr = _root;
 
         while (curr)
         {
@@ -59,22 +59,22 @@ public:
 
         curr = new Node(kv);
 
-        if (parent->_left == curr)       // 链接在左边
+        if (parent->_kv.first < curr->_kv.first) // 链接在左边
         {
-            parent->_left = curr; 
+            parent->_left = curr;
             curr->_parent = parent;
         }
-        else if (parent->_right == curr) // 链接在右边
+        else // 链接在右边
         {
-            parent->_right = curr; 
+            parent->_right = curr;
             curr->_parent = parent;
         }
 
         // 控制平衡
         // 1. 更新平衡因子
         // 2. 旋转处理异常平衡因子
-        
-        while (parent) // 更新到根 
+
+        while (parent) // 更新到根
         {
             // 更新
             if (curr == parent->_left)
@@ -98,30 +98,20 @@ public:
             }
             else if (parent->_bf == 2 || parent->_bf == -2) // 平衡被打破，开始旋转
             {
-//                RotateR();
-//
-//                RotateR();
-//
-//                RotateRL();
-//
-//                RotateLR();
             }
             else // 树构建出错
             {
-                assert(false); 
+                assert(false);
             }
         }
 
         return true;
     }
 
-//    bool RotateR();
-
-//    bool RotateL();
-
-//    bool RotateRL();
-
-//    bool RotateLR();
+    //    bool RotateR();
+    //    bool RotateL();
+    //    bool RotateRL();
+    //    bool RotateLR();
 
 private:
     Node* _root;
@@ -134,7 +124,7 @@ void TestAVLTree()
 
     int a[] = { 1, 2, 3 };
 
-    for (auto e : a) 
+    for (auto e : a)
     {
         avl->Insert(make_pair(e, e));
     }

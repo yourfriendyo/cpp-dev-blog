@@ -1,39 +1,22 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Fortran module files
-*.mod
-*.smod
-
 # CLion
 cmake-build-debug/
 .idea/
 
-#### VS2019
+# VSCode
+.vscode/
+main.dSYM
 
+#### VS2019
 # project_name/
 *.vcxproj
 *.filters
 *.user
 *.vs/
 *.DS_Store
-
-
 # project_name/Debug/project_name.tlog/
 *.tlog
 *.lastbuildstate
 *.txt
-
 # project_name/Debug/
 *.log
 *.recipe
