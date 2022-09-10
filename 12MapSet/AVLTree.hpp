@@ -13,7 +13,6 @@ struct AVLTNode
     pair<K, V> _kv;
     int _bf; // balance factor
 
-
     AVLTNode(const pair<K, V>& kv)
         :_left(nullptr), _right(nullptr), _parent(nullptr), _kv(kv), _bf(0)
     {}
@@ -28,7 +27,6 @@ public:
     AVLTree() : _root(nullptr)
     {}
 
-public:
     bool Insert(const pair<K, V>& kv)
     {
         if (_root == nullptr)
@@ -77,18 +75,15 @@ public:
         while (parent) // 更新到根
         {
             // 更新
-            if (curr == parent->_left)
-            {
+            if (curr == parent->_left) {
                 parent->_bf--;
             }
-            else if (curr == parent->_right)
-            {
+            else if (curr == parent->_right) {
                 parent->_bf++;
             }
 
             // 检测
-            if (parent->_bf == 0) // 已经平衡，更新结束
-            {
+            if (parent->_bf == 0) { // 已经平衡，更新结束
                 break;
             }
             else if (parent->_bf == 1 || parent->_bf == -1) // 向上更新
@@ -99,8 +94,7 @@ public:
             else if (parent->_bf == 2 || parent->_bf == -2) // 平衡被打破，开始旋转
             {
             }
-            else // 树构建出错
-            {
+            else { // 树构建出错
                 assert(false);
             }
         }
@@ -108,10 +102,10 @@ public:
         return true;
     }
 
-    //    bool RotateR();
-    //    bool RotateL();
-    //    bool RotateRL();
-    //    bool RotateLR();
+    // bool RotateR();
+    // bool RotateL();
+    // bool RotateRL();
+    // bool RotateLR();
 
 private:
     Node* _root;
@@ -122,7 +116,7 @@ void TestAVLTree()
 {
     AVLTree<int, int>* avl = new AVLTree<int, int>();
 
-    int a[] = { 1, 2, 3 };
+    int a[] = { 2, 1, 3 };
 
     for (auto e : a)
     {
