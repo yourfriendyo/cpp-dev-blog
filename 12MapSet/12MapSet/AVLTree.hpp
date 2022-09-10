@@ -57,24 +57,24 @@ public:
 
         curr = new Node(kv);
 
-        if (parent->_kv.first < kv.first) // Á´½ÓÔÚÓÒ±ß
+        if (parent->_kv.first < kv.first) // é“¾æŽ¥åœ¨å³è¾¹
         {
             parent->_right = curr;
             curr->_parent = parent;
         }
-        else // Á´½ÓÔÚ×ó±ß
+        else // é“¾æŽ¥åœ¨å·¦è¾¹
         {
             parent->_left = curr;
             curr->_parent = parent;
         }
 
-        // ¿ØÖÆÆ½ºâ
-        // 1. ¸üÐÂÆ½ºâÒò×Ó
-        // 2. Ðý×ª´¦ÀíÒì³£Æ½ºâÒò×Ó
+        // æŽ§åˆ¶å¹³è¡¡
+        // 1. æ›´æ–°å¹³è¡¡å› å­
+        // 2. æ—‹è½¬å¤„ç†å¼‚å¸¸å¹³è¡¡å› å­
 
-        while (parent) // ¸üÐÂµ½¸ù
+        while (parent) // æ›´æ–°åˆ°æ ¹
         {
-            // ¸üÐÂ
+            // æ›´æ–°
             if (curr == parent->_left) {
                 parent->_bf--;
             }
@@ -82,23 +82,23 @@ public:
                 parent->_bf++;
             }
 
-            // ¼ì²â
-            if (parent->_bf == 0) { // ÒÑ¾­Æ½ºâ£¬¸üÐÂ½áÊø
+            // æ£€æµ‹
+            if (parent->_bf == 0) { // å·²ç»å¹³è¡¡ï¼Œæ›´æ–°ç»“æŸ
                 break;
             }
-            else if (parent->_bf == 1 || parent->_bf == -1) // ÏòÉÏ¸üÐÂ
+            else if (parent->_bf == 1 || parent->_bf == -1) // å‘ä¸Šæ›´æ–°
             {
                 curr = parent;
                 parent = parent->_parent;
             }
-            else if (parent->_bf == 2 || parent->_bf == -2) // Æ½ºâ±»´òÆÆ£¬¿ªÊ¼Ðý×ª
+            else if (parent->_bf == 2 || parent->_bf == -2) // å¹³è¡¡è¢«æ‰“ç ´ï¼Œå¼€å§‹æ—‹è½¬
             {
                 if (parent->_bf == -2 || cur->_bf == -1) {
                     RotateR(parent);
                 }
                 break;
             }
-            else { // Ê÷¹¹½¨³ö´í
+            else { // æ ‘æž„å»ºå‡ºé”™
                 assert(false);
             }
         }
@@ -106,7 +106,7 @@ public:
         return true;
     }
 
-    // ÓÒµ¥Ðý
+    // å³å•æ—‹
     void RotateR(Node* parent)
     {
         Node* subL = parent->_left;
