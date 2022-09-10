@@ -6,23 +6,9 @@ cmake-build-debug/
 .vscode/
 main.dSYM
 
-#### VS2019
-# project_name/
+# VS2022
+x64/
+.vs/
 *.vcxproj
 *.filters
 *.user
-*.vs/
-*.DS_Store
-# project_name/Debug/project_name.tlog/
-*.tlog
-*.lastbuildstate
-*.txt
-# project_name/Debug/
-*.log
-*.recipe
-*.ilk
-*.enc
-*.obj
-*.idb
-*.pdb
-

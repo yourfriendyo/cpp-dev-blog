@@ -57,24 +57,24 @@ public:
 
         curr = new Node(kv);
 
-        if (parent->_kv.first < kv.first) // é“¾æŽ¥åœ¨å³è¾¹
+        if (parent->_kv.first < kv.first) // Á´½ÓÔÚÓÒ±ß
         {
             parent->_right = curr;
             curr->_parent = parent;
         }
-        else // é“¾æŽ¥åœ¨å·¦è¾¹
+        else // Á´½ÓÔÚ×ó±ß
         {
             parent->_left = curr;
             curr->_parent = parent;
         }
 
-        // æŽ§åˆ¶å¹³è¡¡
-        // 1. æ›´æ–°å¹³è¡¡å› å­
-        // 2. æ—‹è½¬å¤„ç†å¼‚å¸¸å¹³è¡¡å› å­
+        // ¿ØÖÆÆ½ºâ
+        // 1. ¸üÐÂÆ½ºâÒò×Ó
+        // 2. Ðý×ª´¦ÀíÒì³£Æ½ºâÒò×Ó
 
-        while (parent) // æ›´æ–°åˆ°æ ¹
+        while (parent) // ¸üÐÂµ½¸ù
         {
-            // æ›´æ–°
+            // ¸üÐÂ
             if (curr == parent->_left) {
                 parent->_bf--;
             }
@@ -82,20 +82,20 @@ public:
                 parent->_bf++;
             }
 
-            // æ£€æµ‹
-            if (parent->_bf == 0) { // å·²ç»å¹³è¡¡ï¼Œæ›´æ–°ç»“æŸ
+            // ¼ì²â
+            if (parent->_bf == 0) { // ÒÑ¾­Æ½ºâ£¬¸üÐÂ½áÊø
                 break;
             }
-            else if (parent->_bf == 1 || parent->_bf == -1) // å‘ä¸Šæ›´æ–°
+            else if (parent->_bf == 1 || parent->_bf == -1) // ÏòÉÏ¸üÐÂ
             {
                 curr = parent;
                 parent = parent->_parent;
             }
-            else if (parent->_bf == 2 || parent->_bf == -2) // å¹³è¡¡è¢«æ‰“ç ´ï¼Œå¼€å§‹æ—‹è½¬
+            else if (parent->_bf == 2 || parent->_bf == -2) // Æ½ºâ±»´òÆÆ£¬¿ªÊ¼Ðý×ª
             {
                 RotateR(parent);
             }
-            else { // æ ‘æž„å»ºå‡ºé”™
+            else { // Ê÷¹¹½¨³ö´í
                 assert(false);
             }
         }
@@ -103,8 +103,8 @@ public:
         return true;
     }
 
-    // å³å•æ—‹
-    bool RotateR(Node* parent)
+    // ÓÒµ¥Ðý
+    void RotateR(Node* parent)
     {
         Node* left_child = parent->_left;
         Node* parentP = parent->_parent;
@@ -132,13 +132,6 @@ public:
         parent->_parent = left_child;
     }
 
-    bool RotateL(Node* parent)
-    {
-
-    }
-
-    bool RotateRL(Node* parent);
-    bool RotateLR(Node* parent);
 
 private:
     Node* _root;
