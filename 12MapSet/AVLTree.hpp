@@ -59,14 +59,14 @@ public:
 
         curr = new Node(kv);
 
-        if (parent->_kv.first < curr->_kv.first) // 链接在左边
-        {
-            parent->_left = curr;
-            curr->_parent = parent;
-        }
-        else // 链接在右边
+        if (parent->_kv.first < kv.first) // 链接在右边
         {
             parent->_right = curr;
+            curr->_parent = parent;
+        }
+        else // 链接在左边
+        {
+            parent->_left = curr;
             curr->_parent = parent;
         }
 
