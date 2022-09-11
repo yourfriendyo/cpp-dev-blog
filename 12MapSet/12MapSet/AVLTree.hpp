@@ -99,9 +99,14 @@ public:
                 else if (parent->_bf == 2 || curr->_bf == 1) {
                     RotateL(parent);
                 }
-                else if (parent)
+                else if (parent->_bf == -2 || curr->_bf == 1) {
+                    RotateLR(parent);
+                }
+                else if (parent->_bf == 2 || curr->_bf == -1) {
+                    RotateRL(parent);
+                }
 
-                    break;
+                break;
             }
             else { // 树构建出错
                 assert(false);
@@ -141,10 +146,10 @@ public:
         subL->_parent = parentP; // 维护三叉链
 
         // 更新平衡因子
-        subL->_bf = 0;
-        parent->_bf = 0;
+        subL->_bf = parent->_bf = 0;
     }
 
+    // 左单旋
     void RotateL(Node* parent)
     {
         Node* subR = parent->_right;
@@ -153,7 +158,7 @@ public:
         // 先将左子树链接到父节点下
         parent->_left = subRL;
         if (subRL)
-            subRL->_paernt = parent;
+            subRL->_parent = parent;
 
         Node* parentP = parent->_parent; // 先保存父节点的父
         // 再将父节点链接到当前节点下
@@ -176,6 +181,34 @@ public:
         subR->_bf = parent->_bf = 0;
     }
 
+    // 左右双旋
+    void RotateLR(Node* parent)
+    {
+        RotateL(parent->_left);
+        RotateR(parent);
+    }
+
+    // 右左双旋
+    void RotateRL(Node* parent)
+    {
+        RotateL(parent->_right);
+        RotateR(parent);
+    }
+
+    void Inorder()
+    {
+        _Inorder(_root);
+        cout << endl;
+    }
+    void _Inorder(Node* root)
+    {
+        if (root == nullptr)
+            return;
+
+        if (root->_left) _Inorder(root->_left);
+        cout << root->_kv.first << ":" << root->_kv.second << " ";
+        if (root->_right) _Inorder(root->_right);
+    }
 
 private:
     Node* _root;
@@ -186,11 +219,13 @@ void TestAVLTree()
 {
     AVLTree<int, int>* avl = new AVLTree<int, int>();
 
-    int a[] = { 5, 4, 3, 2, 1, 0 };
+    // int a[] = { 5, 4, 3, 2, 1, 0 };
+    int a[] = { 4,2,6,1,3,5,15,7,16,14 };
 
     for (auto e : a)
     {
         avl->Insert(make_pair(e, e));
+        avl->Inorder();
     }
 
 }
