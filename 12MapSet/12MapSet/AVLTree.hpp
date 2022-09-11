@@ -96,7 +96,12 @@ public:
                 if (parent->_bf == -2 || curr->_bf == -1) {
                     RotateR(parent);
                 }
-                break;
+                else if (parent->_bf == 2 || curr->_bf == 1) {
+                    RotateL(parent);
+                }
+                else if (parent)
+
+                    break;
             }
             else { // 树构建出错
                 assert(false);
@@ -125,9 +130,7 @@ public:
 
         // 更新根节点或链接爷节点
         if (parent == _root)
-        {
             _root = subL;
-        }
         else
         {
             if (parentP->_left == parent)
@@ -140,6 +143,37 @@ public:
         // 更新平衡因子
         subL->_bf = 0;
         parent->_bf = 0;
+    }
+
+    void RotateL(Node* parent)
+    {
+        Node* subR = parent->_right;
+        Node* subRL = subR->_left;
+
+        // 先将左子树链接到父节点下
+        parent->_left = subRL;
+        if (subRL)
+            subRL->_paernt = parent;
+
+        Node* parentP = parent->_parent; // 先保存父节点的父
+        // 再将父节点链接到当前节点下
+        subR->_left = parent;
+        parent->_parent = subR;
+
+        // 与所在树链接
+        if (_root == parent)
+            _root = subR;
+        else
+        {
+            if (parentP->_left = parent)
+                parentP->_left = subR;
+            else
+                parentP->_right = subR;
+        }
+        subR->_parent = parentP; // 维护三叉链
+
+        // 更新平衡因子
+        subR->_bf = parent->_bf = 0;
     }
 
 
