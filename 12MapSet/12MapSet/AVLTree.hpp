@@ -184,13 +184,43 @@ public:
     // 左右双旋
     void RotateLR(Node* parent)
     {
+        // 提前保存
+        Node* subL = parent->_left;
+        Node* subLR = subL->_right;
+        int bf = subLR->_bf;
+
         RotateL(parent->_left);
         RotateR(parent);
+
+        // subRL的平衡因子以区分情况
+        if (bf == 1)
+        {
+            parent->_bf = 1;
+            subL->_bf = 0;
+            subLR->_bf = 0;
+        }
+        else if (bf == -1)
+        {
+            parent->_bf = 0;
+            subL->_bf = -1;
+            subLR->_bf = 0;
+        }
+        else if (bf == 0)
+        {
+            parent->_bf = 0;
+            subL->_bf = 0;
+            subLR->_bf = 0;
+        }
+        else {
+            assert(false);
+        }
+
     }
 
     // 右左双旋
     void RotateRL(Node* parent)
     {
+        // 提前保存
         Node* subR = parent->_right;
         Node* subRL = subR->_left;
         int bf = subRL->_bf;
@@ -198,6 +228,7 @@ public:
         RotateL(parent->_right);
         RotateR(parent);
 
+        // subRL的平衡因子以区分情况
         if (bf == 1)
         {
             parent->_bf = -1;
@@ -249,6 +280,13 @@ public:
         int leftHeight = Height(root->_left);
         int rightHeight = Height(root->_right);
 
+        if (rightHeight - leftHeight != root->_bf)
+        {
+            cout << root->_kv.first << "现在是：" << root->_bf << endl;
+            cout << root->_kv.first << "应该是：" << rightHeight - leftHeight << endl;
+            return false;
+        }
+
         // 判断高度差是否满足
         return abs(rightHeight - leftHeight) < 2 &&
             _IsBalance(root->_left) && _IsBalance(root->_right);
@@ -281,6 +319,7 @@ void TestAVLTree()
     {
         avl->Insert(make_pair(e, e));
         avl->Inorder();
+        cout << avl->IsBalance() << endl;
     }
 
     cout << avl->IsBalance() << endl;
