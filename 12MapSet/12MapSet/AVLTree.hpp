@@ -210,6 +210,22 @@ public:
         if (root->_right) _Inorder(root->_right);
     }
 
+    bool IsBalance()
+    {
+        _IsBalance(_root);
+    }
+    bool _IsBalance(Node* root)
+    {
+        if (root == nullptr)
+            return true;
+
+        // 检查
+        int leftHeight = Height(root->_left);
+        int rightHeight = Height(root->_right);
+
+        return abs(rightHeight - leftHeight) < 2; // 判断高度差是否满足
+    }
+
 private:
     Node* _root;
 };
