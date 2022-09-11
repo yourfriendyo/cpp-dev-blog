@@ -93,7 +93,7 @@ public:
             }
             else if (parent->_bf == 2 || parent->_bf == -2) // 平衡被打破，开始旋转
             {
-                if (parent->_bf == -2 || cur->_bf == -1) {
+                if (parent->_bf == -2 || curr->_bf == -1) {
                     RotateR(parent);
                 }
                 break;
@@ -117,15 +117,17 @@ public:
         if (subLR)
             subLR->_parent = parent;
 
+        Node* parentP = parent->_parent;
+
         // 父节点作当前节点的右子树
         subL->_right = parent;
         parent->_parent = subL;
 
         // 更新根节点或链接爷节点
-        Node* parentP = parent->_parent;
-
         if (parent == _root)
+        {
             _root = subL;
+        }
         else
         {
             if (parentP->_left == parent)
@@ -137,7 +139,7 @@ public:
 
         // 更新平衡因子
         subL->_bf = 0;
-        parent._bf = 0;
+        parent->_bf = 0;
     }
 
 
@@ -150,7 +152,7 @@ void TestAVLTree()
 {
     AVLTree<int, int>* avl = new AVLTree<int, int>();
 
-    int a[] = { 5, 4, 3, 2, 1 };
+    int a[] = { 5, 4, 3, 2, 1, 0 };
 
     for (auto e : a)
     {
