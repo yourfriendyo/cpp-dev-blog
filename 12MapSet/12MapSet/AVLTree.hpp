@@ -191,8 +191,34 @@ public:
     // 右左双旋
     void RotateRL(Node* parent)
     {
+        Node* subR = parent->_right;
+        Node* subRL = subR->_left;
+        int bf = subRL->_bf;
+
         RotateL(parent->_right);
         RotateR(parent);
+
+        if (bf == 1)
+        {
+            parent->_bf = -1;
+            subR->_bf = 0;
+            subRL->_bf = 0;
+        }
+        else if (bf == -1)
+        {
+            parent->_bf = 0;
+            subR->_bf = 1;
+            subRL->_bf = 0;
+        }
+        else if (bf == 0)
+        {
+            parent->_bf = 0;
+            subR->_bf = 0;
+            subRL->_bf = 0;
+        }
+        else {
+            assert(false);
+        }
     }
 
     void Inorder()
@@ -212,7 +238,7 @@ public:
 
     bool IsBalance()
     {
-        _IsBalance(_root);
+        return _IsBalance(_root);
     }
     bool _IsBalance(Node* root)
     {
@@ -223,7 +249,20 @@ public:
         int leftHeight = Height(root->_left);
         int rightHeight = Height(root->_right);
 
-        return abs(rightHeight - leftHeight) < 2; // 判断高度差是否满足
+        // 判断高度差是否满足
+        return abs(rightHeight - leftHeight) < 2 &&
+            _IsBalance(root->_left) && _IsBalance(root->_right);
+    }
+
+    int Height(Node* root)
+    {
+        if (root == nullptr)
+            return 0;
+
+        int leftHeight = Height(root->_left);
+        int rightHeight = Height(root->_right);
+
+        return rightHeight > leftHeight ? rightHeight + 1 : leftHeight + 1;
     }
 
 private:
@@ -243,5 +282,7 @@ void TestAVLTree()
         avl->Insert(make_pair(e, e));
         avl->Inorder();
     }
+
+    cout << avl->IsBalance() << endl;
 
 }
