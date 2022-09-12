@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <cassert>
+
 using namespace std;
 
 template <class K, class V>
@@ -134,15 +135,19 @@ public:
 
         // 更新根节点或链接爷节点
         if (parent == _root)
+        {
             _root = subL;
+            _root->_parent = nullptr;
+        }
         else
         {
             if (parentP->_left == parent)
                 parentP->_left = subL;
             else
                 parentP->_right = subL;
+
+            subL->_parent = parentP; // 维护三叉链
         }
-        subL->_parent = parentP; // 维护三叉链
 
         // 更新平衡因子
         subL->_bf = parent->_bf = 0;
@@ -166,15 +171,19 @@ public:
 
         // 与所在树链接
         if (_root == parent)
+        {
             _root = subR;
+            _root->_parent = nullptr;
+        }
         else
         {
             if (parentP->_left = parent)
                 parentP->_left = subR;
             else
                 parentP->_right = subR;
+
+            subR->_parent = parentP; // 维护三叉链
         }
-        subR->_parent = parentP; // 维护三叉链
 
         // 更新平衡因子
         subR->_bf = parent->_bf = 0;
@@ -311,14 +320,15 @@ void TestAVLTree()
 {
     AVLTree<int, int>* avl = new AVLTree<int, int>();
 
-    // int a[] = { 5, 4, 3, 2, 1, 0 };
-    int a[] = { 4,2,6,1,3,5,15,7,16,14 };
+    int a[] = { 5, 4, 3, 2, 1, 0 };
+    // int a[] = { 4,2,6,1,3,5,15,7,16,14 };
 
     for (auto e : a)
     {
         avl->Insert(make_pair(e, e));
         avl->Inorder();
         cout << avl->IsBalance() << endl;
+        cout << "-------------------------------------" << endl;
     }
 
     cout << avl->IsBalance() << endl;
