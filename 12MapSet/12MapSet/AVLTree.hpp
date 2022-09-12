@@ -160,7 +160,7 @@ public:
         Node* subRL = subR->_left;
 
         // 先将左子树链接到父节点下
-        parent->_left = subRL;
+        parent->_right = subRL;
         if (subRL)
             subRL->_parent = parent;
 
@@ -177,7 +177,7 @@ public:
         }
         else
         {
-            if (parentP->_left = parent)
+            if (parentP->_left == parent)
                 parentP->_left = subR;
             else
                 parentP->_right = subR;
@@ -233,8 +233,8 @@ public:
         Node* subRL = subR->_left;
         int bf = subRL->_bf;
 
-        RotateL(parent->_right);
-        RotateR(parent);
+        RotateR(parent->_right);
+        RotateL(parent);
 
         // subRL的平衡因子以区分情况
         if (bf == 1)
@@ -320,8 +320,8 @@ void TestAVLTree()
 {
     AVLTree<int, int>* avl = new AVLTree<int, int>();
 
-    int a[] = { 5, 4, 3, 2, 1, 0 };
-    // int a[] = { 4,2,6,1,3,5,15,7,16,14 };
+    int a[] = { 0,1,2,3,4,5 };
+    //int a[] = { 4,2,6,1,3,5,15,7,16,14 };
 
     for (auto e : a)
     {
