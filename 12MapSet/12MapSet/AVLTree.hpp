@@ -93,19 +93,18 @@ public:
             }
             else if (parent->_bf == 2 || parent->_bf == -2) // 平衡被打破，开始旋转
             {
-                if (parent->_bf == -2 || curr->_bf == -1) {
+                if (parent->_bf == -2 && curr->_bf == -1) {
                     RotateR(parent);
                 }
-                else if (parent->_bf == 2 || curr->_bf == 1) {
+                else if (parent->_bf == 2 && curr->_bf == 1) {
                     RotateL(parent);
                 }
-                else if (parent->_bf == -2 || curr->_bf == 1) {
+                else if (parent->_bf == -2 && curr->_bf == 1) {
                     RotateLR(parent);
                 }
-                else if (parent->_bf == 2 || curr->_bf == -1) {
+                else if (parent->_bf == 2 && curr->_bf == -1) {
                     RotateRL(parent);
                 }
-
                 break;
             }
             else { // 树构建出错
@@ -323,5 +322,4 @@ void TestAVLTree()
     }
 
     cout << avl->IsBalance() << endl;
-
 }
