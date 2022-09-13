@@ -195,7 +195,7 @@ public:
         // 提前保存
         Node* subL = parent->_left;
         Node* subLR = subL->_right;
-        int bf = subLR->_bf;
+        int bf = subLR->_bf;    // 保存旋转前的左子树的右孩子的平衡因子
 
         RotateL(parent->_left);
         RotateR(parent);
@@ -231,25 +231,25 @@ public:
         // 提前保存
         Node* subR = parent->_right;
         Node* subRL = subR->_left;
-        int bf = subRL->_bf;
+        int bf = subRL->_bf; // 保存旋转前的右子树的左孩子的平衡因子
 
         RotateR(parent->_right);
         RotateL(parent);
 
         // subRL的平衡因子以区分情况
-        if (bf == 1)
+        if (bf == 1)         // 插入在左孩子的左边
         {
             parent->_bf = -1;
             subR->_bf = 0;
             subRL->_bf = 0;
         }
-        else if (bf == -1)
+        else if (bf == -1)   // 插入在左孩子的右边
         {
             parent->_bf = 0;
             subR->_bf = 1;
             subRL->_bf = 0;
         }
-        else if (bf == 0)
+        else if (bf == 0)    // 插入在中间
         {
             parent->_bf = 0;
             subR->_bf = 0;
@@ -320,8 +320,8 @@ void TestAVLTree()
 {
     AVLTree<int, int>* avl = new AVLTree<int, int>();
 
-    int a[] = { 0,1,2,3,4,5 };
-    //int a[] = { 4,2,6,1,3,5,15,7,16,14 };
+    // int a[] = { 0,1,2,3,4,5 };
+    int a[] = { 4,2,6,1,3,5,15,7,16,14 };
 
     for (auto e : a)
     {
