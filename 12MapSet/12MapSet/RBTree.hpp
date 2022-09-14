@@ -80,3 +80,9 @@ private:
     Node* _root;
 
 };
+
+
+void TestRBTree()
+{
+
+}
