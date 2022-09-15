@@ -190,22 +190,22 @@ public:
         }
 
         Node* curr = _root;
-        int black_num = 0;
+        int bench_mark = 0;
 
         while (curr)
         {
-            if (curr->_col == BLACK) black_num++;
+            if (curr->_col == BLACK) bench_mark++;
             curr = curr->_left;
         }
 
-        int cnt = 0;
-        return _IsBalance(_root, black_num, cnt);
+        int black_cnt = 0;
+        return _IsBalance(_root, bench_mark, black_cnt);
     }
-    bool _IsBalance(Node* root, int& black_num, int cnt)
+    bool _IsBalance(Node* root, int& bench_mark, int black_cnt)
     {
         if (root == nullptr)
         {
-            if (cnt != black_num) return false;
+            if (black_cnt != bench_mark) return false;
             return true;
         }
 
@@ -217,9 +217,11 @@ public:
             return false;
         }
 
-        if (root->_col == BLACK) cnt++;
+        if (root->_col == BLACK)
+            black_cnt++;
 
-        return _IsBalance(root->_left) && _IsBalance(root->_right);
+        return _IsBalance(root->_left, bench_mark, black_cnt) &&
+            _IsBalance(root->_right, bench_mark, black_cnt);
     }
 
     int Height(Node* root)
@@ -319,7 +321,7 @@ void TestRBTree()
     {
         rbt.Insert(make_pair(e, e));
         rbt.Inorder();
-        // cout << rbt.IsBalance() << endl;
+        cout << rbt.IsBalance() << endl;
         cout << "-------------------------------------" << endl;
     }
 
