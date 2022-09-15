@@ -183,27 +183,43 @@ public:
 
     bool IsBalance()
     {
-        return _IsBalance(_root);
+        if (_root && _root->_col == RED)
+        {
+            cout << "root point is not black" << endl;
+            return false;
+        }
+
+        Node* curr = _root;
+        int black_num = 0;
+
+        while (curr)
+        {
+            if (curr->_col == BLACK) black_num++;
+            curr = curr->_left;
+        }
+
+        int cnt = 0;
+        return _IsBalance(_root, black_num, cnt);
     }
-    bool _IsBalance(Node* root)
+    bool _IsBalance(Node* root, int& black_num, int cnt)
     {
         if (root == nullptr)
+        {
+            if (cnt != black_num) return false;
             return true;
+        }
 
-        // 检查
-        int leftHeight = Height(root->_left);
-        int rightHeight = Height(root->_right);
+        if (root->_col == RED && root->_parent->_col == RED)
+        {
+            cout << root->_kv.first << ":" << root->_col << " ";
+            cout << root->_parent->_kv.first << ":" << root->_parent->col << endl;
+            cout << << "连续出现红色节点" << endl;
+            return false;
+        }
 
-        // if (rightHeight - leftHeight != root->_bf)
-        // {
-        //     cout << root->_kv.first << "现在是：" << root->_bf << endl;
-        //     cout << root->_kv.first << "应该是：" << rightHeight - leftHeight << endl;
-        //     return false;
-        // }
+        if (root->_col == BLACK) cnt++;
 
-        // 判断高度差是否满足
-        return abs(rightHeight - leftHeight) < 2 &&
-            _IsBalance(root->_left) && _IsBalance(root->_right);
+        return _IsBalance(root->_left) && _IsBalance(root->_right);
     }
 
     int Height(Node* root)
