@@ -212,8 +212,8 @@ public:
         if (root->_col == RED && root->_parent->_col == RED)
         {
             cout << root->_kv.first << ":" << root->_col << " ";
-            cout << root->_parent->_kv.first << ":" << root->_parent->col << endl;
-            cout << << "连续出现红色节点" << endl;
+            cout << root->_parent->_kv.first << ":" << root->_parent->_col << endl;
+            cout << "连续出现红色节点" << endl;
             return false;
         }
 
