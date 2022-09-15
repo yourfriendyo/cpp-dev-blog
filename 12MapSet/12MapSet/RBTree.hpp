@@ -15,9 +15,9 @@ struct RBTNode
     RBTNode* _parent;
     pair<K, V> _kv;
 
-    enum COLOR _col;
+    COLOR _col;
 
-    RBTNode(const pair<K, V> kv, enum COLOR col)
+    RBTNode(const pair<K, V> kv, COLOR col)
         : _left(nullptr), _right(nullptr), _parent(nullptr),
         _kv(kv), _col(col)
     {}
