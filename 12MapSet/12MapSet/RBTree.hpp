@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <vector>
+#include <ctime>
 using namespace std;
 
 enum COLOR {
@@ -315,10 +317,22 @@ void TestRBTree()
     RBTree<int, int> rbt;
 
     // int a[] = { 5,4,3,2,1,0 };
-    int a[] = { 4,2,6,1,3,5,15,7,16,14 };
+    // int a[] = { 0,1,2,3,4,5 };
+    int a[] = { 10,8,11,6,9,3,4,1 };
+    // int a[] = {3,1,2};
+    // int a[] = { 4,2,6,1,3,5,15,7,16,14 };
+
+    // vector<int> v;
+    // srand(time(nullptr));
+
+    // int N = 1000;
+
+    // for (int i = 0; i < N; i++)
+    //     v.push_back(i);
 
     for (auto e : a)
     {
+        cout << "insert: " << e << endl;
         rbt.Insert(make_pair(e, e));
         rbt.Inorder();
         cout << rbt.IsBalance() << endl;
