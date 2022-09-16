@@ -12,7 +12,7 @@ int main()
     // TestAVLTree();
     // TestRBTree();
 
-    test_map();
+    // test_map();
     test_set();
 
 

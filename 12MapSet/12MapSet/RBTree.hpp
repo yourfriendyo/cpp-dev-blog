@@ -25,6 +25,70 @@ struct RBTNode
     {}
 };
 
+
+template <class T, class Ref, class Ptr>
+struct RBTIterator
+{
+    typedef RBTNode<T> Node;
+    typedef RBTIterator<T, Ref, Ptr> Self;
+    Node* _node;
+
+    RBTIterator(const Node* node) : _node(node)
+    {}
+
+    Ref operator*() {
+        return _node->_data;
+    }
+
+    Ptr operator->() {
+        return &_node->_data;
+    }
+
+    Self& operator++()
+    {
+        if (_node->_right) // 访问右子树的最左节点
+        {
+            Node* min = _node->_right;
+
+            while (min->_left)
+            {
+                min = min->_right;
+            }
+            _node = min;
+        }
+        else
+        {
+            Node* curr = _node;
+            Node* parent = curr->_parent;
+
+            while (parent && curr == parent->_right) // 找到cur非其右孩子的父亲
+            {
+                curr = curr->_parent;
+                parent = parent->_parent;
+            }
+
+            _node = parent;
+        }
+
+        return *this;
+    }
+
+    Self& operator--()
+    {
+
+        return *this;
+    }
+
+    bool operator==(const Self& it) {
+        return _node == it.node;
+    }
+
+    bool operator!=(const Self& it) {
+        return !operator!=(it);
+    }
+};
+
+
 // set RBTree <K, K, SetKeyOfT>
 // map RBTree <K, T, MapKeyOfT>
 template <class K, class T, class KeyOfT>
@@ -33,6 +97,26 @@ class RBTree
     typedef RBTNode<T> Node;
     KeyOfT kot;
 public:
+    typedef RBTIterator<T, T&, T*> iterator;
+    typedef RBTIterator<T, T&, T*> const_iterator;
+
+    iterator begin()
+    {
+        Node* left = _root;
+        while (left && left->_left) {
+            left = left->_left;
+        }
+
+        return iterator(left);
+    }
+    iterator end()
+    {
+        return iterator(nullptr);
+    }
+
+    const_iterator cbegin() {}
+    const_iterator cend() {}
+
     RBTree() : _root(nullptr)
     {}
 
