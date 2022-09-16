@@ -31,6 +31,7 @@ template <class K, class T, class KeyOfT>
 class RBTree
 {
     typedef RBTNode<T> Node;
+    KeyOfT kot;
 public:
     RBTree() : _root(nullptr)
     {}
@@ -49,12 +50,12 @@ public:
 
         while (curr)
         {
-            if (KeyOfT(curr->_data) < KeyOfT(data))
+            if (kot(curr->_data) < kot(data))
             {
                 parent = curr;
                 curr = curr->_right;
             }
-            else if (KeyOfT(curr->_data) > KeyOfT(data))
+            else if (kot(curr->_data) > kot(data))
             {
                 parent = curr;
                 curr = curr->_left;
@@ -67,7 +68,7 @@ public:
         curr = new Node(data);
         curr->_col = RED;
 
-        if (KeyOfT(parent->_data) < KeyOfT(data))
+        if (kot(parent->_data) < kot(data))
         {
             parent->_right = curr;
             curr->_parent = parent;
@@ -183,7 +184,7 @@ public:
             return;
 
         if (root->_left) _Inorder(root->_left);
-        cout << KeyOfT(root->_data) << " ";
+        cout << kot(root->_data) << " ";
         if (root->_right) _Inorder(root->_right);
     }
 

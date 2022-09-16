@@ -13,7 +13,7 @@ int main()
     // TestRBTree();
 
     test_map();
-    // test_set();
+    test_set();
 
 
 
