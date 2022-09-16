@@ -118,6 +118,8 @@ public:
                         curr->_col = BLACK;
                         grandpa->_col = RED;
                     }
+
+                    break;
                 }
             }
             else // 父在右
@@ -156,10 +158,10 @@ public:
                         curr->_col = BLACK;
                         grandpa->_col = RED;
                     }
+                    break;
                 }
             }
 
-            break;
         }
 
         _root->_col = BLACK; // 维护根节点颜色
@@ -226,12 +228,16 @@ public:
             _IsBalance(root->_right, bench_mark, black_cnt);
     }
 
-    int Height(Node* root)
+    int Height()
+    {
+        return _Height(_root);
+    }
+    int _Height(Node* root)
     {
         if (root == nullptr)
             return 0;
-        int leftHeight = Height(root->_left);
-        int rightHeight = Height(root->_right);
+        int leftHeight = _Height(root->_left);
+        int rightHeight = _Height(root->_right);
 
         return rightHeight > leftHeight ? rightHeight + 1 : leftHeight + 1;
     }
@@ -322,21 +328,23 @@ void TestRBTree()
     // int a[] = {3,1,2};
     // int a[] = { 4,2,6,1,3,5,15,7,16,14 };
 
-    // vector<int> v;
-    // srand(time(nullptr));
+    vector<int> v;
+    srand(time(nullptr));
 
-    // int N = 1000;
+    int N = 100000000;
 
-    // for (int i = 0; i < N; i++)
-    //     v.push_back(i);
+    for (int i = 0; i < N; i++)
+        v.push_back(rand());
 
-    for (auto e : a)
+    for (auto e : v)
     {
-        cout << "insert: " << e << endl;
+        // cout << "insert: " << e << endl;
         rbt.Insert(make_pair(e, e));
-        rbt.Inorder();
-        cout << rbt.IsBalance() << endl;
-        cout << "-------------------------------------" << endl;
+        // rbt.Inorder();
+        // cout << "-------------------------------------" << endl;
     }
+
+    cout << rbt.IsBalance() << endl;
+    cout << rbt.Height() << endl;
 
 }
