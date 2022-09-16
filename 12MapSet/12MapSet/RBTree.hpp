@@ -332,19 +332,28 @@ void TestRBTree()
     srand(time(nullptr));
 
     int N = 100000000;
+    // int N = 10000;
 
     for (int i = 0; i < N; i++)
+    {
         v.push_back(rand());
+        // v.push_back(i);
+    }
+
+    int cnt = 0;
 
     for (auto e : v)
     {
         // cout << "insert: " << e << endl;
-        rbt.Insert(make_pair(e, e));
+        if (!rbt.Insert(make_pair(e, e))) {
+            cnt++;
+        }
         // rbt.Inorder();
         // cout << "-------------------------------------" << endl;
     }
 
     cout << rbt.IsBalance() << endl;
-    cout << rbt.Height() << endl;
+    cout << "height: " << rbt.Height() << endl;
+    cout << "cnt: " << cnt << endl;
 
 }
