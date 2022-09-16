@@ -25,8 +25,8 @@ struct RBTNode
     {}
 };
 
-// set RBTree<K, K>
-// map RBTree<K, T>
+// set RBTree <K, K, SetKeyOfT>
+// map RBTree <K, T, MapKeyOfT>
 template <class K, class T, class KeyOfT>
 class RBTree
 {
@@ -183,65 +183,8 @@ public:
             return;
 
         if (root->_left) _Inorder(root->_left);
-        cout << root->_data << ":" << root->_kv.second << " ";
+        cout << KeyOfT(root->_data) << " ";
         if (root->_right) _Inorder(root->_right);
-    }
-
-    bool IsBalance()
-    {
-        if (_root && _root->_col == RED)
-        {
-            cout << "root point is not black" << endl;
-            return false;
-        }
-
-        Node* curr = _root;
-        int bench_mark = 0;
-
-        while (curr)
-        {
-            if (curr->_col == BLACK) bench_mark++;
-            curr = curr->_left;
-        }
-
-        int black_cnt = 0;
-        return _IsBalance(_root, bench_mark, black_cnt);
-    }
-    bool _IsBalance(Node* root, int& bench_mark, int black_cnt)
-    {
-        if (root == nullptr)
-        {
-            if (black_cnt != bench_mark) return false;
-            return true;
-        }
-
-        if (root->_col == RED && root->_parent->_col == RED)
-        {
-            cout << root->_data << ":" << root->_col << " ";
-            cout << root->_parent->_data << ":" << root->_parent->_col << endl;
-            cout << "连续出现红色节点" << endl;
-            return false;
-        }
-
-        if (root->_col == BLACK)
-            black_cnt++;
-
-        return _IsBalance(root->_left, bench_mark, black_cnt) &&
-            _IsBalance(root->_right, bench_mark, black_cnt);
-    }
-
-    int Height()
-    {
-        return _Height(_root);
-    }
-    int _Height(Node* root)
-    {
-        if (root == nullptr)
-            return 0;
-        int leftHeight = _Height(root->_left);
-        int rightHeight = _Height(root->_right);
-
-        return rightHeight > leftHeight ? rightHeight + 1 : leftHeight + 1;
     }
 
 private:
