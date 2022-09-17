@@ -12,8 +12,8 @@ int main()
     // TestAVLTree();
     // TestRBTree();
 
-    // test_map();
-    test_set();
+    test_map();
+    // test_set();
 
 
 

@@ -33,7 +33,7 @@ struct RBTIterator
     typedef RBTIterator<T, Ref, Ptr> Self;
     Node* _node;
 
-    RBTIterator(const Node* node) : _node(node)
+    RBTIterator(Node* node) : _node(node)
     {}
 
     Ref operator*() {
@@ -46,22 +46,24 @@ struct RBTIterator
 
     Self& operator++()
     {
-        if (_node->_right) // 访问右子树的最左节点
+        /* 右子树不为空，访问右子树的最左节点 */
+        if (_node->_right)
         {
             Node* min = _node->_right;
 
             while (min->_left)
             {
-                min = min->_right;
+                min = min->_left;
             }
             _node = min;
         }
+        /* 右子树为空，找到cur非其右孩子的父亲 */
         else
         {
             Node* curr = _node;
             Node* parent = curr->_parent;
 
-            while (parent && curr == parent->_right) // 找到cur非其右孩子的父亲
+            while (parent && curr == parent->_right)
             {
                 curr = curr->_parent;
                 parent = parent->_parent;
@@ -80,11 +82,11 @@ struct RBTIterator
     }
 
     bool operator==(const Self& it) {
-        return _node == it.node;
+        return _node == it._node;
     }
 
     bool operator!=(const Self& it) {
-        return !operator!=(it);
+        return !operator==(it);
     }
 };
 
