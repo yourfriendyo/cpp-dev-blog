@@ -123,9 +123,9 @@ class RBTree
     KeyOfT kot;
 public:
     typedef RBTIterator<T, T&, T*> iterator;
-    typedef RBTIterator<T, T&, T*> const_iterator;
+    typedef RBTIterator<T, const T&, const T*> const_iterator;
     typedef RBTIterator<T, T&, T*> reverse_iterator;
-    typedef RBTIterator<T, T&, T*> const_reverse_iterator;
+    typedef RBTIterator<T, const T&, const T*> const_reverse_iterator;
 
     iterator begin()
     {
@@ -163,13 +163,48 @@ public:
     RBTree() : _root(nullptr)
     {}
 
-    bool Insert(const T& data)
+    RBTree(const RBTree<K, T, KeyOfT>& t)
+    {
+        _root = Copy(t._root);
+    }
+
+    Node* Copy(Node* root, Node* parent = nullptr)
+    {
+        if (root == nullptr)
+            return nullptr;
+
+        Node* new_node = new Node(root->_data);
+        new_node->_col = root->_col;
+        new_node->_parent = parent; // 链接父节点
+
+        new_node->_left = Copy(root->_left, new_node);
+        new_node->_right = Copy(root->_right, new_node);
+
+        return new_node;
+    }
+
+    ~RBTree() {
+        Destroy(_root);
+    }
+
+    void Destroy(Node* root)
+    {
+        if (root == nullptr)
+            return;
+
+        Destroy(root->_left);
+        Destroy(root->_right);
+
+        delete root;
+    }
+
+    pair<iterator, bool> Insert(const T& data)
     {
         if (_root == nullptr)
         {
             _root = new Node(data);
             _root->_col = BLACK;
-            return true;
+            return make_pair(iterator(_root), true);
         }
 
         Node* parent = nullptr;
@@ -188,12 +223,14 @@ public:
                 curr = curr->_left;
             }
             else {
-                return false;
+                return make_pair(iterator(curr), false);
             }
         }
 
         curr = new Node(data);
         curr->_col = RED;
+
+        Node* save_node = curr; // 保存curr的位置，以便返回
 
         if (kot(parent->_data) < kot(data))
         {
@@ -296,7 +333,7 @@ public:
 
         _root->_col = BLACK; // 维护根节点颜色
 
-        return true;
+        return make_pair(iterator(save_node), true);
 
     }
 

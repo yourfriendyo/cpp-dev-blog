@@ -35,7 +35,7 @@ namespace test
         reverse_iterator rend() {
             return _t.rend();
         }
-        bool insert(const K& key)
+        pair<iterator, bool> insert(const K& key)
         {
             return _t.Insert(key);
         }
@@ -83,5 +83,18 @@ namespace test
             --rit;
         }
         cout << endl;
+
+        set<int> cp(s);
+
+        cout << "---------" << endl;
+
+        auto cp_it = cp.begin();
+        while (cp_it != cp.end())
+        {
+            cout << *cp_it << " ";
+            ++cp_it;
+        }
+        cout << endl;
+
     }
 }
