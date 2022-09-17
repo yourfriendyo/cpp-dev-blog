@@ -18,6 +18,7 @@ namespace test
         };
 
         typedef typename RBTree<K, K, SetKeyOfK>::iterator iterator;
+        typedef typename RBTree<K, K, SetKeyOfK>::reverse_iterator reverse_iterator;
 
         iterator begin() {
             return _t.begin();
@@ -27,6 +28,13 @@ namespace test
             return _t.end();
         }
 
+        reverse_iterator rbegin() {
+            return _t.rbegin();
+        }
+
+        reverse_iterator rend() {
+            return _t.rend();
+        }
         bool insert(const K& key)
         {
             return _t.Insert(key);
@@ -47,11 +55,12 @@ namespace test
         set<int> s;
 
         // vector<int> v = { 1,2,3,4,5,6 };
+        vector<int> v = { 6,5,4,3,2,1 };
 
-        int N = 100;
-        vector<int> v;
-        for (int i = 0; i < N; i++)
-            v.push_back(rand());
+        // int N = 100;
+        // vector<int> v;
+        // for (int i = 0; i < N; i++)
+        //     v.push_back(rand());
 
         for (auto e : v)
         {
@@ -64,6 +73,15 @@ namespace test
             cout << *it << " ";
             ++it;
         }
-            cout << endl;
+        cout << endl;
+
+        set<int>::reverse_iterator rit = s.rbegin();
+
+        while (rit != s.rend())
+        {
+            cout << *rit << " ";
+            --rit;
+        }
+        cout << endl;
     }
 }

@@ -51,8 +51,7 @@ struct RBTIterator
         {
             Node* min = _node->_right;
 
-            while (min->_left)
-            {
+            while (min->_left) {
                 min = min->_left;
             }
             _node = min;
@@ -77,6 +76,30 @@ struct RBTIterator
 
     Self& operator--()
     {
+        /* 左子树不为空，访问左子树的最右节点 */
+        if (_node->_left)
+        {
+            Node* max = _node->_left;
+
+            while (max->_right) {
+                max = max->_right;
+            }
+            _node = max;
+        }
+        /* 左子树为空，找到cur非其左孩子的父节点 */
+        else
+        {
+            Node* curr = _node;
+            Node* parent = _node->_parent;
+
+            while (parent && parent->_left == curr)
+            {
+                curr = curr->_parent;
+                parent = parent->_parent;
+            }
+
+            _node = parent;
+        }
 
         return *this;
     }
@@ -101,6 +124,8 @@ class RBTree
 public:
     typedef RBTIterator<T, T&, T*> iterator;
     typedef RBTIterator<T, T&, T*> const_iterator;
+    typedef RBTIterator<T, T&, T*> reverse_iterator;
+    typedef RBTIterator<T, T&, T*> const_reverse_iterator;
 
     iterator begin()
     {
@@ -111,13 +136,29 @@ public:
 
         return iterator(left);
     }
-    iterator end()
-    {
+    iterator end() {
         return iterator(nullptr);
     }
 
+    reverse_iterator rbegin()
+    {
+        Node* right = _root;
+        while (right && right->_right) {
+            right = right->_right;
+        }
+
+        return iterator(right);
+    }
+    reverse_iterator rend() {
+        return iterator(nullptr);
+    }
+
+
     const_iterator cbegin() {}
     const_iterator cend() {}
+    const_reverse_iterator crbegin() {}
+    const_reverse_iterator crend() {}
+
 
     RBTree() : _root(nullptr)
     {}
