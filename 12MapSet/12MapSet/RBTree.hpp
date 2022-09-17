@@ -163,6 +163,12 @@ public:
     RBTree() : _root(nullptr)
     {}
 
+    RBTree<K, T, KeyOfT>& operator=(RBTree<K, T, KeyOfT> t)
+    {
+        swap(_root, t._root);
+        return *this;
+    }
+
     RBTree(const RBTree<K, T, KeyOfT>& t)
     {
         _root = Copy(t._root);
