@@ -5,7 +5,8 @@
 #include <map>
 #include <set>
 #include <ctime>
-#include <test.hpp>
+#include "test.hpp"
+#include "Hash.hpp"
 
 using namespace std;
 
@@ -19,6 +20,8 @@ int main()
     // for (auto e : hash)
     //     cout << e.first << ":" << e.second << endl;
     // cout << endl << endl;;
+
+    TestHash1();
 
 
     return 0;
