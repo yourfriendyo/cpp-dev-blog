@@ -126,19 +126,3 @@ void test_op()
 	cout << "          set erase: " << end5 - begin5 << endl;
 	cout << "unordered_set erase: " << end6 - begin6 << endl;
 }
-
-int main()
-{
-	// test_unordered_set();
-
-	// test_op();
-
-	unordered_map<int, int> hash;
-
-	for (auto e : hash)
-		cout << e.first << ":" << e.second << endl;
-
-	cout << endl << endl;;
-
-	return 0;
-}
