@@ -22,7 +22,43 @@ int main()
     // cout << endl << endl;;
 
     TestHash1();
+    TestHash2();
+
+
 
 
     return 0;
+}
+
+
+void TestIndex()
+{
+    int key = 0;
+
+    while (1)
+    {
+        set<int> s;
+
+        int size = 0;
+
+        cin >> key;
+
+        int start = key % size;
+        int index = start;
+
+        for (int i = 0; i < 1000; i++)
+        {
+            s.insert(index);
+
+            index = start + i * i;
+            index %= size;
+        }
+
+        for (auto e : s)
+        {
+            cout << e << " ";
+        }
+
+    }
+
 }
