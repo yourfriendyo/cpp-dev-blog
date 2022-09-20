@@ -16,7 +16,7 @@ namespace NS_Close_Hash
     };
 
     template <class K, class V>
-    struct HashData
+    struct HashNode
     {
         pair<K, V> _kv;
         STATUS _status = EMPTY; // 存储位置上数据的状态
@@ -64,7 +64,7 @@ namespace NS_Close_Hash
     class HashTable
     {
     public:
-        HashData<K, V>* Find(const K& key)
+        HashNode<K, V>* Find(const K& key)
         {
             if (_table.size() == 0)
                 return nullptr;
@@ -96,7 +96,7 @@ namespace NS_Close_Hash
 
         bool Insert(const pair<K, V>& kv)
         {
-            HashData<K, V>* ret = Find(kv.first);
+            HashNode<K, V>* ret = Find(kv.first);
             if (ret)
                 return false;
 
@@ -146,18 +146,19 @@ namespace NS_Close_Hash
 
         bool Erase(const K& key)
         {
-            HashData<K, V>* ret = Find(key);
+            HashNode<K, V>* ret = Find(key);
             if (ret == nullptr)
                 return false;
             else
             {
                 ret->_status = EMPTY;
+                --_n;
                 return true;
             }
         }
 
     private:
-        vector<HashData<K, V>> _table;
+        vector<HashNode<K, V>> _table;
         size_t _n = 0; // 有效存储数据个数
 
     };
@@ -205,15 +206,14 @@ namespace NS_Close_Hash
 namespace NS_Open_Hash
 {
     template <class K, class V>
-    struct HashData
+    struct HashNode
     {
         pair<K, V> _kv;
-        HashData<K, V>* _next = nullptr;
+        HashNode<K, V>* _next = nullptr;
 
-        HashData()
+        HashNode()
         {}
-
-        HashData(const pair<K, V>& kv)
+        HashNode(const pair<K, V>& kv)
             : _kv(kv)
         {}
     };
@@ -240,16 +240,19 @@ namespace NS_Open_Hash
     };
 
 
-    template <class K, class V, class Hash<K> >
+    template <class K, class V, class HashFunc = Hash<K>>
     class HashTable
     {
-        HashData<K, V>* Find(const K& key)
+        typedef HashNode<K, V> Node;
+        HashFunc hf;
+    public:
+        Node* Find(const K& key)
         {
             if (_table.size() == 0)
                 return nullptr;
 
             int pos = key % _table.size(); // 位置
-            HashData<K, V>* list = &_table[pos];
+            Node* list = &_table[pos];
 
             while (list->_next)
             {
@@ -266,11 +269,12 @@ namespace NS_Open_Hash
             if (Find(kv.first))
                 return false;
 
+            // 扩容
             if (_table.size() == 0 || _n * 10 / _table.size() >= 7)
             {
                 size_t newSize = _table.size() == 0 ? 10 : _table.size() * 2;
 
-                HashTable<K, V> newHT;
+                Node newHT;
                 newHT._table.resize(newSize);
 
                 for (auto e : _table)
@@ -279,12 +283,14 @@ namespace NS_Open_Hash
                 _table.swap(newHT._table);
             }
 
-            size_t pos = kv.first % _table.size(); // 位置
+            size_t pos = hf(kv.first) % _table.size(); // 位置
 
-            HashData<K, V>* list = &_table[pos]; // 获取链表地址
+            Node* newNode = HashData(kv);
+
+            Node* list = _table[pos]; // 获取链表地址
             if (!list) // 头插
             {
-                HashData<K, V>* newNode = HashData(kv);
+                newNode->_next = _table[pos];
                 _table[pos] = newNode;
             }
 
@@ -293,13 +299,12 @@ namespace NS_Open_Hash
                 list = list->_next;
             }
 
-            HashData<K, V>* newNode = HashData(kv);
             list->_next = newNode;
         }
 
         bool Erase(const K& key)
         {
-            HashData<K, V>* ret = Find(key);
+            HashNode<K, V>* ret = Find(key);
             if (!ret) {
                 return false;
             }
@@ -307,8 +312,8 @@ namespace NS_Open_Hash
             {
                 size_t pos = key % _table.size();
 
-                HashData<K, V>* next = ret->_next;
-                HashData<K, V>* prev = _table[pos];
+                HashNode<K, V>* next = ret->_next;
+                HashNode<K, V>* prev = _table[pos];
 
                 while (prev->_next->_kv.first != key) {
                     prev = prev->_next;
@@ -321,7 +326,7 @@ namespace NS_Open_Hash
             }
         }
     private:
-        vector<HashData<K, V>> _table;
+        vector<HashNode<K, V>*> _table;
         size_t n;
 
     };

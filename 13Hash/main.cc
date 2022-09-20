@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
-#include <unordered_map>
-#include <unordered_set>
 #include <map>
 #include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include <ctime>
 #include "test.hpp"
 #include "Hash.hpp"
@@ -13,7 +13,7 @@ using namespace std;
 int main()
 {
     // test_unordered_set();
-
+    //
     // test_op();
 
     // unordered_map<int, int> hash;
@@ -21,10 +21,8 @@ int main()
     //     cout << e.first << ":" << e.second << endl;
     // cout << endl << endl;;
 
-    TestHash1();
-    TestHash2();
-
-
+    NS_Close_Hash::TestHash1();
+    NS_Close_Hash::TestHash2();
 
 
     return 0;
