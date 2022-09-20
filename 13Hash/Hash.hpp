@@ -107,7 +107,7 @@ namespace NS_Close_Hash
             {
                 size_t newSize = _table.size() == 0 ? 10 : _table.size() * 2;
 
-                HashTable<K, V, HashFunc> newHT;
+                HashTable<K, V> newHT;
                 newHT._table.resize(newSize);
 
                 for (auto e : _table)
@@ -252,7 +252,7 @@ namespace NS_Open_Hash
                 return nullptr;
 
             int pos = key % _table.size(); // 位置
-            Node* list = &_table[pos];
+            Node* list = _table[pos];
 
             while (list->_next)
             {
@@ -270,65 +270,87 @@ namespace NS_Open_Hash
                 return false;
 
             // 扩容
-            if (_table.size() == 0 || _n * 10 / _table.size() >= 7)
+            if (_table.size() == 0 || _n == _table.size())
             {
                 size_t newSize = _table.size() == 0 ? 10 : _table.size() * 2;
 
-                Node newHT;
-                newHT._table.resize(newSize);
+                vector<Node*> newTable;
+                newTable.resize(newSize);
 
-                for (auto e : _table)
-                    newHT.Insert(e);
+                for (auto& e : _table) // 遍历原哈希表
+                {
+                    Node* curr = e;
+                    Node* next = curr;
 
-                _table.swap(newHT._table);
+                    // 遍历
+                    while (curr != nullptr) // 当下链表不为空
+                    {
+                        next = curr->_next; // 记录下一个位置
+
+                        size_t pos = hf(curr->_kv.first) % _table.size(); // 找到插入位置
+                        // 头插
+                        curr->_next = newTable[pos];
+                        newTable[pos] = curr;
+
+                        curr = next; // 步进
+                    }
+
+                    e = nullptr; // 置空，以便后期释放
+                }
+
+                _table.swap(newTable); // 置换
             }
 
-            size_t pos = hf(kv.first) % _table.size(); // 位置
+            // 位置
+            size_t pos = hf(kv.first) % _table.size();
+            // 头插
+            Node* newNode = new Node(kv);
 
-            Node* newNode = HashData(kv);
+            newNode->_next = _table[pos];
+            _table[pos] = newNode;
 
-            Node* list = _table[pos]; // 获取链表地址
-            if (!list) // 头插
-            {
-                newNode->_next = _table[pos];
-                _table[pos] = newNode;
-            }
-
-            //尾插
-            while (list->_next) {
-                list = list->_next;
-            }
-
-            list->_next = newNode;
+            ++_n;
         }
 
         bool Erase(const K& key)
         {
             HashNode<K, V>* ret = Find(key);
-            if (!ret) {
+            if (!ret)
                 return false;
+
+            size_t pos = key % _table.size();
+
+            HashNode<K, V>* next = ret->_next;
+            HashNode<K, V>* prev = _table[pos]; // 链表起始位置
+
+            while (prev->_kv.first != key) {
+                prev = prev->_next;
             }
-            else
-            {
-                size_t pos = key % _table.size();
 
-                HashNode<K, V>* next = ret->_next;
-                HashNode<K, V>* prev = _table[pos];
+            prev->_next = next; // 链接
+            delete ret; // 释放
 
-                while (prev->_next->_kv.first != key) {
-                    prev = prev->_next;
-                }
+            --_n;
 
-                prev->_next = next; // 链接
-                delete prev->_next; // 释放
-
-                return true;
-            }
+            return true;
         }
+
     private:
         vector<HashNode<K, V>*> _table;
-        size_t n;
+        size_t _n;
 
     };
+
+    void TestHash1()
+    {
+        HashTable<int, int> hash;
+
+        vector<int> v = { 4,24,14,7,37,27,57,67,34,14,54,64 };
+
+        for (auto e : v) {
+            hash.Insert(make_pair(e, e));
+        }
+
+    }
 
 }

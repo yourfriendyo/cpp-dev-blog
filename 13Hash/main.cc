@@ -21,9 +21,10 @@ int main()
     //     cout << e.first << ":" << e.second << endl;
     // cout << endl << endl;;
 
-    NS_Close_Hash::TestHash1();
-    NS_Close_Hash::TestHash2();
+    // NS_Close_Hash::TestHash1();
+    // NS_Close_Hash::TestHash2();
 
+    NS_Open_Hash::TestHash1();
 
     return 0;
 }
