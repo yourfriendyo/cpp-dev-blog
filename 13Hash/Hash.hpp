@@ -238,13 +238,105 @@ namespace NS_Open_Hash
         }
     };
 
+    template <class K, class T, class KeyOfT, class HashFunc>
+    class HashTable;
+
+    template <class K, class T, class Ref, class Ptr, class KeyOfT, class HashFunc>
+    struct __HTIterator
+    {
+        typedef HashNode<T> Node;
+        typedef HashTable<K, T, KeyOfT, HashFunc> HashTable;
+        typedef __HTIterator<K, T, Ref, Ptr, KeyOfT, HashFunc> Self;
+
+        Node* _node;
+        HashTable* _pht; // 指向哈希表的对象指针
+
+        __HTIterator(Node* node, HashTable* pht)
+            : _node(node), _pht(pht)
+        {}
+
+        Ref operator*() {
+            return _node->_data;
+        }
+
+        Ptr operator->() {
+            return &_node->_data;
+        }
+
+        bool operator==(const Self& it) const
+        {
+            return _node == it._node;
+        }
+
+        bool operator!=(const Self& it) const
+        {
+            return !(_node == it._node);
+        }
+
+        Self operator++()
+        {
+            if (_node->_next)
+            {
+                _node = _node->_next;
+            }
+            else
+            {
+                KeyOfT kot;
+                HashFunc hf;
+                // 计算当前哈希桶位置
+                size_t pos = hf(kot(_node->_data)) % _pht->_table.size();
+                ++pos;
+
+                // 找到下一个不为空的桶
+                while (pos < _pht->_table.size() && !_pht->_table[pos]) {
+                    ++pos;
+                }
+
+                if (pos < _pht->_table.size()) {
+                    _node = _pht->_table[pos]; // 指向该桶的首位元素
+                }
+                else {
+                    _node = nullptr; // 走完了
+                }
+            }
+            return *this;
+        }
+
+    };
 
     template <class K, class T, class KeyOfT, class HashFunc>
     class HashTable
     {
+        // 声明友元
+        template <class K, class T, class Ref, class Ptr, class KeyOfT, class HashFunc>
+        friend struct __HTIterator;
+    public:
         typedef HashNode<T> Node;
+        typedef __HTIterator<K, T, T&, T*, KeyOfT, HashFunc> iterator;
+
+    private:
         HashFunc hf;
         KeyOfT kot;
+
+    public:
+        iterator begin()
+        {
+            for (auto& e : _table) {
+                if (e)
+                    return iterator(e, this);
+            }
+            return end();
+        }
+        iterator end()
+        {
+            return iterator(nullptr, this);
+        }
+
+        iterator rbegin()
+        {}
+        iterator rend()
+        {}
+
 
     public:
         Node* Find(const K& key)

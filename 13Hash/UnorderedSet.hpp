@@ -16,6 +16,16 @@ namespace NS_Unordered_Set
             }
         };
 
+    public:
+        typedef typename HashTable<K, K, SetKeyOfT, hash>::iterator iterator;
+
+        iterator begin() {
+            return _ht.begin();
+        }
+        iterator end() {
+            return _ht.end();
+        }
+
         bool insert(const K& key) {
             return _ht.Insert(key);
         }
@@ -35,6 +45,13 @@ namespace NS_Unordered_Set
         ius.insert(5);
         ius.insert(14);
 
+        unordered_set<int>::iterator it = ius.begin();
+        while (it != ius.end())
+        {
+            cout << *it << endl;
+            ++it;
+        }
+
         unordered_set<string> sus;
 
         sus.insert("string");
@@ -43,6 +60,7 @@ namespace NS_Unordered_Set
         sus.insert("insert");
         sus.insert("qwer");
         sus.insert("your");
+
 
     }
 
