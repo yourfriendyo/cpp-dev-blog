@@ -273,7 +273,7 @@ namespace NS_Open_Hash
             return !(_node == it._node);
         }
 
-        Self operator++()
+        Self& operator++()
         {
             if (_node->_next)
             {
@@ -384,7 +384,7 @@ namespace NS_Open_Hash
                         curr = next; // 步进
                     }
 
-                    e = nullptr; // 置空，以便后期释放
+                    e = nullptr; // 置空
                 }
 
                 _table.swap(newTable); // 置换

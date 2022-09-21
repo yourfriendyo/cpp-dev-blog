@@ -17,7 +17,7 @@ namespace NS_Unordered_Map
         };
 
     public:
-        typedef typename HashTable<K, K, MapKeyOfT, hash>::iterator iterator;
+        typedef typename HashTable<K, pair<K, V>, MapKeyOfT, hash>::iterator iterator;
 
         iterator begin() {
             return _ht.begin();
