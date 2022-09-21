@@ -45,6 +45,13 @@ namespace NS_Unordered_Map
             um.insert(make_pair(e, e));
         }
 
+        unordered_map<int, int>::iterator it = um.begin();
+        while (it != um.end())
+        {
+            cout << it->first << ":" << it->second << endl;
+            ++it;
+        }
+
     }
 
 
