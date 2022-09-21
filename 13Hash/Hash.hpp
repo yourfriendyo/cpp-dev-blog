@@ -256,12 +256,11 @@ namespace NS_Open_Hash
         {}
 
         Ref operator*() {
-            // return _node->_data;
-            return _node;
+            return _node->_data;
         }
 
         Ptr operator->() {
-            return &_node;
+            return &_node->_data;
         }
 
         bool operator==(const Self& it) const
