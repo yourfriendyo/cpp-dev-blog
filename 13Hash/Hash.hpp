@@ -206,16 +206,14 @@ namespace NS_Close_Hash
 
 namespace NS_Open_Hash
 {
-    template <class K, class V>
+    template <class T>
     struct HashNode
     {
-        pair<K, V> _kv;
-        HashNode<K, V>* _next = nullptr;
+        T _data;
+        HashNode<T>* _next;
 
-        HashNode()
-        {}
-        HashNode(const pair<K, V>& kv)
-            : _kv(kv)
+        HashNode(const T& data)
+            : _data(data), _next(nullptr)
         {}
     };
 
@@ -241,11 +239,12 @@ namespace NS_Open_Hash
     };
 
 
-    template <class K, class V, class HashFunc = Hash<K>>
+    template <class K, class T, class KeyOfT, class HashFunc>
     class HashTable
     {
-        typedef HashNode<K, V> Node;
+        typedef HashNode<T> Node;
         HashFunc hf;
+        KeyOfT kot;
 
     public:
         Node* Find(const K& key)
@@ -258,7 +257,7 @@ namespace NS_Open_Hash
 
             while (curr)
             {
-                if (curr->_kv.first == key) {
+                if (kot(curr->_data) == key) {
                     return curr;
                 }
                 curr = curr->_next;
@@ -267,9 +266,9 @@ namespace NS_Open_Hash
             return nullptr;
         }
 
-        bool Insert(const pair<K, V>& kv)
+        bool Insert(const T& data)
         {
-            if (Find(kv.first))
+            if (Find(kot(data)))
                 return false;
 
             // 扩容
@@ -290,7 +289,7 @@ namespace NS_Open_Hash
                     {
                         next = curr->_next; // 记录下一个位置
 
-                        size_t pos = hf(curr->_kv.first) % newSize; // 找到插入位置
+                        size_t pos = hf(kot(curr->_data)) % newSize; // 找到插入位置
                         // 头插
                         curr->_next = newTable[pos];
                         newTable[pos] = curr;
@@ -305,9 +304,9 @@ namespace NS_Open_Hash
             }
 
             // 位置
-            size_t pos = hf(kv.first) % _table.size();
+            size_t pos = hf(kot(data)) % _table.size();
             // 头插
-            Node* newNode = new Node(kv);
+            Node* newNode = new Node(data);
 
             newNode->_next = _table[pos];
             _table[pos] = newNode;
@@ -329,7 +328,7 @@ namespace NS_Open_Hash
 
             while (curr)
             {
-                if (curr->_kv.first == key)
+                if (kot(curr->_data) == key)
                 {
                     // 头删
                     if (prev == nullptr) {
@@ -359,31 +358,31 @@ namespace NS_Open_Hash
 
     void TestHash1()
     {
-        HashTable<int, int> hash;
+        // HashTable<int, pair<int, int>> hash;
 
-        vector<int> v = { 4,24,14,7,37,27,57,67,34,14,54 };
+        // vector<int> v = { 4,24,14,7,37,27,57,67,34,14,54 };
 
-        for (auto e : v) {
-            hash.Insert(make_pair(e, e));
-        }
+        // for (auto e : v) {
+        //     hash.Insert(make_pair(e, e));
+        // }
 
-        hash.Insert(make_pair(64, 64));
+        // hash.Insert(make_pair(64, 64));
 
 
-        for (auto e : v)
-        {
-            cout << e << endl;
+        // for (auto e : v)
+        // {
+            // cout << e << endl;
 
-            HashNode<int, int>* ret = hash.Find(e);
-            printf("%p\n", ret);
+            // HashNode<int, int>* ret = hash.Find(e);
+            // printf("%p\n", ret);
 
-            hash.Erase(e);
+            // hash.Erase(e);
 
-            ret = hash.Find(e);
-            printf("%p\n", ret);
+            // ret = hash.Find(e);
+            // printf("%p\n", ret);
 
-            cout << "---------------------" << endl;
-        }
+            // cout << "---------------------" << endl;
+        // }
     }
 
 }

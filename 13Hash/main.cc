@@ -7,6 +7,8 @@
 #include <ctime>
 #include "test.hpp"
 #include "Hash.hpp"
+#include "UnorderedMap.hpp"
+#include "UnorderedSet.hpp"
 
 using namespace std;
 
@@ -23,8 +25,10 @@ int main()
 
     // NS_Close_Hash::TestHash1();
     // NS_Close_Hash::TestHash2();
+    // NS_Open_Hash::TestHash1();
 
-    NS_Open_Hash::TestHash1();
+    NS_Unordered_Set::test_unordered_set();
+
 
     return 0;
 }
