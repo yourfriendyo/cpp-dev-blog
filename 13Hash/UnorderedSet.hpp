@@ -26,7 +26,7 @@ namespace NS_Unordered_Set
             return _ht.end();
         }
 
-        bool insert(const K& key) {
+        pair<iterator, bool> insert(const K& key) {
             return _ht.Insert(key);
         }
 

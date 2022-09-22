@@ -313,10 +313,52 @@ namespace NS_Open_Hash
     public:
         typedef HashNode<T> Node;
         typedef __HTIterator<K, T, T&, T*, KeyOfT, HashFunc> iterator;
+        typedef HashTable<K, T, KeyOfT, HashFunc> Self;
 
     private:
         HashFunc hf;
         KeyOfT kot;
+
+    public:
+        HashTable() = default;
+
+        HashTable(const Self& ht)
+        {
+            _table.resize(ht._table.size());
+
+            for (auto bucket : ht._table)
+            {
+                Node* curr = bucket;
+                while (curr)
+                {
+                    Node* next = curr->_next;
+                    Node* newNode = new Node(curr->_data);
+
+                    int pos = hf(kot(curr->_data)) % _table.size();
+
+                    newNode->_next = _table[pos];
+                    _table[pos]->_next = newNode;
+
+                    curr = next;
+                }
+            }
+        }
+
+        ~HashTable()
+        {
+            for (auto bucket : _table)
+            {
+                Node* curr = bucket;
+                while (curr)
+                {
+                    delete curr;
+                    curr = curr->_next;
+                }
+
+                bucket = nullptr;
+            }
+        }
+
 
     public:
         iterator begin()
@@ -334,10 +376,10 @@ namespace NS_Open_Hash
 
 
     public:
-        Node* Find(const K& key)
+        iterator Find(const K& key)
         {
             if (_table.empty())
-                return nullptr;
+                return end();
 
             size_t pos = hf(key) % _table.size(); // 位置
             Node* curr = _table[pos];
@@ -345,18 +387,19 @@ namespace NS_Open_Hash
             while (curr)
             {
                 if (kot(curr->_data) == key) {
-                    return curr;
+                    return iterator(curr, this); // 构造迭代器返回
                 }
                 curr = curr->_next;
             }
 
-            return nullptr;
+            return end();
         }
 
-        bool Insert(const T& data)
+        pair<iterator, bool> Insert(const T& data)
         {
-            if (Find(kot(data)))
-                return false;
+            iterator ret = Find(kot(data));
+            if (ret != end())
+                return make_pair(ret, false);
 
             // 扩容
             if (_table.empty() || _n == _table.size())
@@ -399,7 +442,7 @@ namespace NS_Open_Hash
             _table[pos] = newNode;
 
             ++_n;
-            return true;
+            return make_pair(iterator(newNode, this), true);
         }
 
         bool Erase(const K& key)

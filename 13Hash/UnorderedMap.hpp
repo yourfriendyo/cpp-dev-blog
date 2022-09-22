@@ -26,7 +26,13 @@ namespace NS_Unordered_Map
             return _ht.end();
         }
 
-        bool insert(const pair<K, V>& kv) {
+        V& operator[](const K& key)
+        {
+            auto ret = _ht.Insert(make_pair(key, V()));
+            return ret.first->second;
+        }
+
+        pair<iterator, bool> insert(const pair<K, V>& kv) {
             return _ht.Insert(kv);
         }
 
@@ -52,7 +58,12 @@ namespace NS_Unordered_Map
             ++it;
         }
 
-    }
+        cout << um[1122] << endl;
 
+        cout << um[2] << endl;
+
+        um[2] = 5;
+        cout << um[2] << endl;
+    }
 
 }
