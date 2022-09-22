@@ -45,11 +45,21 @@ namespace NS_Unordered_Map
         unordered_map<int, int> um;
 
         vector<int> v = { 2,12,22,32,42,52,62 };
-
-        for (auto e : v)
-        {
+        for (auto e : v) {
             um.insert(make_pair(e, e));
         }
+
+        unordered_map<int, int> copy(um);
+
+        cout << "===============" << endl;
+        for (auto e : um) {
+            cout << e.first << ":" << e.second << endl;
+        }
+        for (auto e : copy) {
+            cout << e.first << ":" << e.second << endl;
+        }
+
+        cout << "===============" << endl;
 
         unordered_map<int, int>::iterator it = um.begin();
         while (it != um.end())
@@ -59,9 +69,7 @@ namespace NS_Unordered_Map
         }
 
         cout << um[1122] << endl;
-
         cout << um[2] << endl;
-
         um[2] = 5;
         cout << um[2] << endl;
     }

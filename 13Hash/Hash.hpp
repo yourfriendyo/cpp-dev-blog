@@ -337,11 +337,19 @@ namespace NS_Open_Hash
                     int pos = hf(kot(curr->_data)) % _table.size();
 
                     newNode->_next = _table[pos];
-                    _table[pos]->_next = newNode;
+                    _table[pos] = newNode;
 
                     curr = next;
                 }
             }
+        }
+
+        Self& operator=(Self copy)
+        {
+            swap(_n, copy._n);
+            _table.swap(copy._table);
+
+            return *this;
         }
 
         ~HashTable()
@@ -351,8 +359,10 @@ namespace NS_Open_Hash
                 Node* curr = bucket;
                 while (curr)
                 {
+                    Node* next = curr->_next;
+
                     delete curr;
-                    curr = curr->_next;
+                    curr = next;
                 }
 
                 bucket = nullptr;
@@ -501,17 +511,17 @@ namespace NS_Open_Hash
 
         // for (auto e : v)
         // {
-            // cout << e << endl;
+        //     cout << e << endl;
 
-            // HashNode<int, int>* ret = hash.Find(e);
-            // printf("%p\n", ret);
+        //     HashNode<int>* ret = hash.Find(e);
+        //     printf("%p\n", ret);
 
-            // hash.Erase(e);
+        //     hash.Erase(e);
 
-            // ret = hash.Find(e);
-            // printf("%p\n", ret);
+        //     ret = hash.Find(e);
+        //     printf("%p\n", ret);
 
-            // cout << "---------------------" << endl;
+        //     cout << "---------------------" << endl;
         // }
     }
 

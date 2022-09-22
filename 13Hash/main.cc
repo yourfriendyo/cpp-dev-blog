@@ -9,6 +9,7 @@
 #include "Hash.hpp"
 #include "UnorderedMap.hpp"
 #include "UnorderedSet.hpp"
+#include "BitSet.hpp"
 
 using namespace std;
 
@@ -29,6 +30,7 @@ int main()
 
     // NS_Unordered_Set::test_unordered_set();
     NS_Unordered_Map::test_unordered_map();
+    NS_Bit_Set::test_bitset();
 
 
     return 0;
