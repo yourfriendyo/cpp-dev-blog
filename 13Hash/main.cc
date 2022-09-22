@@ -26,11 +26,14 @@ int main()
 
     // NS_Close_Hash::TestHash1();
     // NS_Close_Hash::TestHash2();
+
     // NS_Open_Hash::TestHash1();
 
     // NS_Unordered_Set::test_unordered_set();
-    NS_Unordered_Map::test_unordered_map();
-    NS_Bit_Set::test_bitset();
+    // NS_Unordered_Map::test_unordered_map();
+
+    // NS_Bit_Set::test_bitset1();
+    NS_Bit_Set::test_bitset2();
 
 
     return 0;
