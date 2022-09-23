@@ -58,7 +58,7 @@ namespace NS_Bloom_Filter
     public:
         void Set(const K& key)
         {
-            size_t len = MUL* N;
+            size_t len = MUL * N;
             size_t index1 = HashFunc1()(key) % len;
             size_t index2 = HashFunc2()(key) % len;
             size_t index3 = HashFunc3()(key) % len;
@@ -147,9 +147,9 @@ namespace NS_Bloom_Filter
                 ++num;
             }
         }
-        cout << "相似字符串误判率:" << num *1.0 / N << endl;
+        cout << "相似字符串误判率:" << num * 1.0 / N << endl;
 
-        
+
         vector<string> v3;
         for (size_t i = 0; i < N; ++i)
         {
@@ -169,6 +169,6 @@ namespace NS_Bloom_Filter
             }
         }
         cout << "不相似字符串误判率:" << n3 * 1.0 / N << endl;
-       
+
     }
 }
