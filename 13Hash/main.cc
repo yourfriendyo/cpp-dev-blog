@@ -10,6 +10,7 @@
 #include "UnorderedMap.hpp"
 #include "UnorderedSet.hpp"
 #include "BitSet.hpp"
+#include "BloomFilter.hpp"
 
 using namespace std;
 
@@ -33,7 +34,9 @@ int main()
     // NS_Unordered_Map::test_unordered_map();
 
     // NS_Bit_Set::test_bitset1();
-    NS_Bit_Set::test_bitset2();
+    // NS_Bit_Set::test_bitset2();
+    // NS_Bloom_Filter::Test_Bloom_Filter1();
+    NS_Bloom_Filter::Test_Bloom_Filter2();
 
 
     return 0;
