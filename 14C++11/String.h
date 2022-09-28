@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <cassert>
+
 using namespace std;
 
 namespace test
@@ -10,12 +11,33 @@ namespace test
     public:
         void swap(string& s);
 
-        // string
-        string(const char* str = "");
-        string(const string& s);
+        string() = default;
+        string(const char* str)
+            : _size(strlen(str))
+            , _capacity(_size)
+        {
+            _str = new char[_capacity + 1];
+            strcpy(_str, str);
+        }
 
-        string& operator=(string s);
-        string& operator=(const string& s);
+        string(const string& s)
+            : _str(nullptr)
+            , _size(strlen(s._str))
+            , _capacity(_size)
+        {
+            string tmp(s._str);
+            swap(tmp);
+        }
+
+        string(const char* str = "");
+
+        string& operator=(string s)
+        {
+            swap(s);
+            _size = s._size;
+            _capacity = s._capacity;
+            return *this;
+        }
 
         ~string();
 
@@ -26,7 +48,7 @@ namespace test
         size_t capacity() const;
 
         void reserve(size_t n);
-        void string::resize(size_t n, char ch = '\0');
+        void resize(size_t n, char ch = '\0');
 
         // access
         char& operator[](size_t pos);
@@ -34,8 +56,6 @@ namespace test
 
         typedef char* iterator;
         typedef const char* const_iterator;
-        typedef char* reverse_iterator;
-        typedef const char* const_reverse_iterator;
 
         iterator begin();
         iterator end();
@@ -98,32 +118,6 @@ namespace test
     };
 
     const size_t string::npos = -1;
-
-    //string
-    string::string(const char* str)
-        : _size(strlen(str))
-        , _capacity(_size)
-    {
-        _str = new char[_capacity + 1];
-        strcpy(_str, str);
-    }
-
-    string::string(const string& s)
-        : _str(nullptr)
-        , _size(strlen(s._str))
-        , _capacity(_size)
-    {
-        string tmp(s._str);
-        swap(tmp);
-    }
-
-    string& string::operator=(string s)
-    {
-        swap(s);
-        _size = s._size;
-        _capacity = s._capacity;
-        return *this;
-    }
 
     //swap
     void string::swap(string& s)
