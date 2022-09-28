@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <map>
 using namespace std;
 
 struct Point
@@ -42,6 +43,18 @@ int main()
     A a2 = 2;               // 单参数隐式类型转换
     //Point pp{ 1 , 2 };    // 多参数隐式类型转换
 
-    vector<int> v1 = { 1,2,3,4,5,6 };
 
+    initializer_list<int> il = { 1,2,3,4,5,6 };
+
+    vector<int> v1 = { 1,2,3,4,5,6 };
+    list<int> lt1 = { 1,2,3,4,5,6 };
+
+    pair<string, string> kv = { "left", "左边" };
+    map<string, string> dict = {
+        {"sort", "排序"},
+        {"insert", "插入"},
+        {"map", "地图"},
+        kv,
+        make_pair("list", "列表")
+    };
 };
