@@ -3,6 +3,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include "List.h"
 using namespace std;
 
 struct Point
@@ -23,7 +24,7 @@ private:
     int _a;
 };
 
-int main()
+void test_initializer_list()
 {
     Point p = { 1 , 2 };              // C++98
     Point pp{ 1 , 2 };                // C++11
@@ -58,3 +59,13 @@ int main()
         make_pair("list", "列表")
     };
 };
+
+int main()
+{
+    // test_initializer_list();
+
+    test::TestList1();
+
+
+    return 0;
+}
