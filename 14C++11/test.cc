@@ -58,13 +58,40 @@ void test_initializer_list()
         kv,
         make_pair("list", "列表")
     };
+
+    test::test_list();
 };
+
+int func(int a)
+{
+    cout << "int func(int a)" << endl;
+    return a;
+}
+
+void test_type_declare()
+{
+    int x = 1;
+    double y = 2.2;
+
+    cout << typeid(x).name() << endl; // 获取变量类型名
+    decltype(x) i = 1; // 使用x的类型创建变量
+
+    int(*pfunc1)(int) = &func;
+    decltype(func) pfunc2;
+
+}
+
+void test_right_value_ref()
+{
+
+}
 
 int main()
 {
     // test_initializer_list();
+    // test_type_declare();
 
-    test::TestList1();
+    test_right_value_ref();
 
 
     return 0;

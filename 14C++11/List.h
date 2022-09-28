@@ -303,7 +303,7 @@ namespace test
         return last;
     }
 
-    void TestList1()
+    void test_list()
     {
         list<int> lt = { 1,2,3,4,5 };
 
