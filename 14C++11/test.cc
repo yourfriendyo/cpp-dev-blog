@@ -81,8 +81,29 @@ void test_type_declare()
 
 }
 
+int fmin(int& x, int& y)
+{
+    return x < y ? x : y;
+}
+
 void test_right_value_ref()
 {
+    double x = 1.1, y = 2.2;
+    int a = 0;
+    int* p = new int(0);
+
+    const int& r1 = 10;
+    const int& r2 = x + y;
+    const int& r3 = fmin(x, y);
+
+    int*&& rr1 = std::move(p);
+    int&& rr2 = std::move(*p);
+    int&& rr3 = std::move(a);
+
+    int&& rrr1 = 10;
+    cout << &rrr1 << endl;
+
+
 
 }
 
