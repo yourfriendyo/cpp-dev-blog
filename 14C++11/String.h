@@ -1,5 +1,8 @@
+#pragma warning(suppress : 4996)
+#define _CRT_SECURE_NO_WARNINGS 1
 #pragma once
 #include <iostream>
+#include <cstring>
 #include <cassert>
 
 using namespace std;
@@ -11,31 +14,36 @@ namespace test
     public:
         void swap(string& s);
 
-        string() = default;
-        string(const char* str)
-            : _size(strlen(str))
-            , _capacity(_size)
+        string(const char* str = "")
+            : _size(strlen(str)), _capacity(_size)
         {
             _str = new char[_capacity + 1];
             strcpy(_str, str);
         }
 
+        // 移动构造
+        string(string&& s)
+            : _str(nullptr), _size(0), _capacity(0)
+        {
+            this->swap(s);
+            cout << "string(string&& s) 移动构造" << endl;
+        }
+
         string(const string& s)
-            : _str(nullptr)
-            , _size(strlen(s._str))
-            , _capacity(_size)
+            : _str(nullptr), _size(strlen(s._str)), _capacity(_size)
         {
             string tmp(s._str);
             swap(tmp);
+            cout << "string(const string& s) 拷贝构造" << endl;
         }
-
-        string(const char* str = "");
 
         string& operator=(string s)
         {
             swap(s);
             _size = s._size;
             _capacity = s._capacity;
+
+            cout << "string& operator=(string s) 赋值重载" << endl;
             return *this;
         }
 
@@ -55,13 +63,9 @@ namespace test
         const char& operator[](size_t pos) const;
 
         typedef char* iterator;
-        typedef const char* const_iterator;
 
         iterator begin();
         iterator end();
-
-        const_iterator cbegin() const;
-        const_iterator cend() const;
 
         // push
         void push_back(char ch);
@@ -70,7 +74,15 @@ namespace test
         string& operator+=(char ch);
         string& operator+=(char* str);
         string& operator+=(string& s);
-        //
+
+        string operator+(char ch)
+        {
+            string tmp(*this);
+            tmp.push_back(ch);
+
+            return tmp;
+        }
+
         string& insert(size_t pos, char ch);
         string& insert(size_t pos, const char* str);
         string& insert(size_t pos, const string& s);
@@ -183,19 +195,11 @@ namespace test
     // iterator
     typedef char* iterator;
     typedef const char* const_iterator;
-    typedef char* reverse_iterator;
-    typedef const char* const_reverse_iterator;
 
     iterator string::begin() {
         return _str;
     }
     iterator string::end() {
-        return _str + _size;
-    }
-    const_iterator string::cbegin() const {
-        return _str;
-    }
-    const_iterator string::cend() const {
         return _str + _size;
     }
 

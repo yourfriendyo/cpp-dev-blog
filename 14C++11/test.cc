@@ -4,7 +4,10 @@
 #include <list>
 #include <map>
 #include "List.h"
-using namespace std;
+#include "String.h"
+
+using std::cout;
+using std::endl;
 
 struct Point
 {
@@ -86,24 +89,45 @@ int fmin(int& x, int& y)
     return x < y ? x : y;
 }
 
+void func1(test::string s)
+{
+
+}
+
+void func2(const test::string& s)
+{
+
+}
+
+test::string func3()
+{
+    test::string s("hello");
+    return s;
+}
+
 void test_right_value_ref()
 {
-    double x = 1.1, y = 2.2;
-    int a = 0;
-    int* p = new int(0);
+    // double x = 1.1, y = 2.2;
+    // int a = 0;
+    // int* p = new int(0);
 
-    const int& r1 = 10;
-    const int& r2 = x + y;
-    const int& r3 = fmin(x, y);
+    // const int& r1 = 10;
+    // const int& r2 = x + y;
+    // const int& r3 = fmin(x, y);
 
-    int*&& rr1 = std::move(p);
-    int&& rr2 = std::move(*p);
-    int&& rr3 = std::move(a);
+    // int*&& rr1 = std::move(p);
+    // int&& rr2 = std::move(*p);
+    // int&& rr3 = std::move(a);
 
-    int&& rrr1 = 10;
-    cout << &rrr1 << endl;
+    // int&& rrr1 = 10;
+    // cout << &rrr1 << endl;
 
+    test::string str("hello world");
 
+    // func1(str);
+    // func2(str);
+
+    func3();
 
 }
 
