@@ -129,9 +129,25 @@ void test_right_value_ref()
     // test::string s3 = s1 + s2;
 
     // test::string toS = test::to_string(1234);
-
+    //
     // cout << func3().c_str() << endl;
-    test::string ret = func3();
+    // test::string ret = func3();
+
+    test::string s1("hello world");
+    test::string s2;
+
+    //s2 = move(s1);
+    //s2 = func3();
+
+    // list<test::string> lt;
+    // lt.push_back(std::move(s1));
+    // cout << endl;
+
+    // lt.push_back(func3());
+    // cout << endl;
+
+    // lt.push_back("constant");
+    // cout << endl;
 
 }
 

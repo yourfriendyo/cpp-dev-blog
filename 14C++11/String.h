@@ -37,19 +37,20 @@ namespace test
             cout << "string(const string& s) 拷贝构造" << endl;
         }
 
-        string& operator=(const string& s)
+        string& operator=(string& s)
         {
-            swap(s);
-            _size = s._size;
-            _capacity = s._capacity;
-
+            string tmp(s);
+            swap(tmp);
             cout << "string& operator=(string s) 赋值重载" << endl;
             return *this;
         }
-        // 移动赋值
-        string operator=(string s)
-        {
 
+        // 移动赋值
+        string& operator=(string&& s)
+        {
+            swap(s);
+            cout << "string& operator=(string&& s) 移动赋值" << endl;
+            return *this;
         }
 
 
