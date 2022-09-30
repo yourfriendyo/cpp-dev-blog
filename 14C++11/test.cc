@@ -62,7 +62,7 @@ void test_initializer_list()
         make_pair("list", "列表")
     };
 
-    test::test_list();
+    //test::test_list();
 };
 
 int func(int a)
@@ -101,6 +101,17 @@ test::string func3()
     return s;
 }
 
+void Func(int& x) { cout << "左值引用" << endl; }
+void Func(const int& x) { cout << "const左值引用" << endl; }
+void Func(int&& x) { cout << "右值引用" << endl; }
+void Func(const int&& x) { cout << "const右值引用" << endl; }
+
+template <class T>
+void PerfectForward(T&& t)
+{
+    Func(std::forward<T>(t));
+}
+
 void test_right_value_ref()
 {
     // double x = 1.1, y = 2.2;
@@ -133,13 +144,13 @@ void test_right_value_ref()
     // cout << func3().c_str() << endl;
     // test::string ret = func3();
 
-    test::string s1("hello world");
-    test::string s2;
+    // test::string s1("hello world");
+    // test::string s2;
 
-    //s2 = move(s1);
-    //s2 = func3();
+    // //s2 = move(s1);
+    // //s2 = func3();
 
-    // list<test::string> lt;
+    // test::list<test::string> lt;
     // lt.push_back(std::move(s1));
     // cout << endl;
 
@@ -148,6 +159,20 @@ void test_right_value_ref()
 
     // lt.push_back("constant");
     // cout << endl;
+
+
+    //PerfectForward(10);
+
+    //int a;
+    //PerfectForward(a);
+    //PerfectForward(std::move(a));
+
+    //const int b = 8;
+    //PerfectForward(b);
+    //PerfectForward(std::move(b));
+
+    test::list<test::string> lt;
+    lt.push_back("list");
 
 }
 
