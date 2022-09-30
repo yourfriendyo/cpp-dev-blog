@@ -37,7 +37,7 @@ namespace test
             cout << "string(const string& s) 拷贝构造" << endl;
         }
 
-        string& operator=(string s)
+        string& operator=(const string& s)
         {
             swap(s);
             _size = s._size;
@@ -46,6 +46,12 @@ namespace test
             cout << "string& operator=(string s) 赋值重载" << endl;
             return *this;
         }
+        // 移动赋值
+        string operator=(string s)
+        {
+
+        }
+
 
         ~string();
 
@@ -79,6 +85,14 @@ namespace test
         {
             string tmp(*this);
             tmp.push_back(ch);
+
+            return tmp;
+        }
+
+        string operator+(string& s)
+        {
+            string tmp(*this);
+            tmp += s;
 
             return tmp;
         }
@@ -496,6 +510,22 @@ namespace test
             cout << ch;
         }
         return out;
+    }
+
+
+    string to_string(int val)
+    {
+        string str;
+        while (val)
+        {
+            int value = val % 10;
+            val /= 10;
+
+            str += ('0' + value);
+        }
+
+        reverse(str.begin(), str.end());
+        return str;
     }
 
     void test_string()

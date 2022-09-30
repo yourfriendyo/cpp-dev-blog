@@ -90,14 +90,10 @@ int fmin(int& x, int& y)
 }
 
 void func1(test::string s)
-{
-
-}
+{}
 
 void func2(const test::string& s)
-{
-
-}
+{}
 
 test::string func3()
 {
@@ -110,29 +106,38 @@ void test_right_value_ref()
     // double x = 1.1, y = 2.2;
     // int a = 0;
     // int* p = new int(0);
-
+    //
     // const int& r1 = 10;
     // const int& r2 = x + y;
     // const int& r3 = fmin(x, y);
-
+    //
     // int*&& rr1 = std::move(p);
     // int&& rr2 = std::move(*p);
     // int&& rr3 = std::move(a);
-
+    //
     // int&& rrr1 = 10;
     // cout << &rrr1 << endl;
 
-    test::string str("hello world");
-
     // func1(str);
     // func2(str);
+    // func3();
 
-    func3();
+    // test::string s("hello world");
+    //
+    // test::string s1 = s;
+    // test::string s2 = std::move(s);
+    // test::string s3 = s1 + s2;
+
+    // test::string toS = test::to_string(1234);
+
+    // cout << func3().c_str() << endl;
+    test::string ret = func3();
 
 }
 
 int main()
 {
+
     // test_initializer_list();
     // test_type_declare();
 
