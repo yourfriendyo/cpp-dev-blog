@@ -4,6 +4,7 @@
 #include <list>
 #include <map>
 #include <algorithm>
+#include <thread>
 #include "List.h"
 #include "String.h"
 
@@ -290,8 +291,74 @@ void test_move_member_func()
     p1 = std::move(p2);
 }
 
+// template <class ...Args>
+// void ShowList(Args... args)
+// {
+//     cout << sizeof...(Args) << endl;
+//     cout << sizeof...(args) << endl;
+//
+//     cout << endl;
+// }
+
+// void ShowList() // 递归终止函数
+// {}
+//
+// template <class Now_Type, class ...TypeSet>
+// void ShowList(Now_Type now_arg, TypeSet... args)
+// {
+//     cout << typeid(now_arg).name() << ":" << now_arg << endl;
+//     ShowList(args...); // 参数包向下传递
+//
+//     cout << endl;
+// }
+
+template <class T>
+int ShowArgs(T arg)
+{
+    cout << typeid(arg).name() << ":" << arg << endl;
+    return 0;
+}
+
+template <class ...TypeSet>
+void ShowList(TypeSet... args)
+{
+    int arr[] = { ShowArgs(args)... }; // 利用列表初始化过程
+}
+
+void test_variadic_templates()
+{
+    // ShowList(1);
+    // ShowList(1, "A");
+    ShowList(1, "A", 1.1);
+}
+
+void Print(int l, int r, int x)
+{
+    // for (int i = l; i < r; ++i) {
+    //     cout << i * x << endl;
+    // }
+
+    // cout << "id: " << this->get_id();
+}
+
 void test_thread()
 {
+    // thread t1;
+    // thread t2(Print, 1, 20, 2);
+    // t2.join();
+
+    int n;
+    cin >> n;
+    vector<thread> thdsv;
+    thdsv.resize(n);
+
+    for (auto& td : thdsv) {
+        td = thread(print, 1, 10, 1);
+    }
+
+    for (auto& td : thdsv) {
+        td.join();
+    }
 
 }
 
@@ -303,6 +370,7 @@ int main()
     // test_right_value_ref();
     // test_lambda_express();
     // test_move_member_func();
+    // test_variadic_templates();
 
     test_thread();
 
