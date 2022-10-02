@@ -332,12 +332,39 @@ void test_variadic_templates()
     ShowList(1, "A", 1.1);
 }
 
+template <class F, class T>
+T useF(F f, T x)
+{
+    static int cnt = 0;
+    cout << (++cnt) << endl;
+    cout << (&cnt) << endl;
+
+    return f(x);
+}
+
+double f(double i) {
+    return i / 2;
+}
+
+struct Functor {
+    double operator()(double x) {
+        return x / 2;
+    }
+};
+
+void test_function_adapter()
+{
+    cout << useF(f, 10.10) << std::endl;;
+    cout << useF(Functor(), 10.10) << std::endl;
+    cout << useF([](double x) {return x / 2;}, 10.10) << std::endl;
+
+}
+
 void Print(int l, int r, int x)
 {
     // for (int i = l; i < r; ++i) {
     //     cout << i * x << endl;
     // }
-
     // cout << "id: " << this->get_id();
 }
 
@@ -372,7 +399,9 @@ int main()
     // test_move_member_func();
     // test_variadic_templates();
 
-    test_thread();
+    // test_thread();
+
+    test_function_adapter();
 
 
 
