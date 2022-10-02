@@ -176,13 +176,18 @@ void test_right_value_ref()
 
 }
 
+void test_lambda()
+{
+
+}
+
 int main()
 {
 
     // test_initializer_list();
     // test_type_declare();
-
-    test_right_value_ref();
+    // test_right_value_ref();
+    test_lambda();
 
 
     return 0;
