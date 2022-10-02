@@ -247,6 +247,49 @@ void test_lambda_express()
 //     b = t;
 // }
 
+class Person
+{
+public:
+    Person(const char* name = "", int age = 18) : _name(name), _age(age)
+    {}
+    // #define kbgz 1
+    // #define kbfz 1
+    // #define xg 1
+
+#ifdef kbgz
+    Person(const Person& p) : _name(p._name), _age(p._age)
+    {}
+#endif
+
+#ifdef kbfz
+    Person operator=(const Person& p)
+    {
+        if (this == &p) {
+            Person tmp(p);
+            return tmp;
+        }
+        return *this;
+    }
+#endif
+
+#ifdef xg
+    ~Person()
+    {}
+#endif
+
+private:
+    test::string _name;
+    int _age;
+
+};
+void test_move_member_func()
+{
+    Person p1("hello", 18);
+
+    Person p2 = std::move(p1);
+    p1 = std::move(p2);
+}
+
 void test_thread()
 {
 
@@ -259,6 +302,7 @@ int main()
     // test_type_declare();
     // test_right_value_ref();
     // test_lambda_express();
+    // test_move_member_func();
 
     test_thread();
 

@@ -41,7 +41,7 @@ namespace test
         {
             string tmp(s);
             swap(tmp);
-            cout << "string& operator=(string s) 赋值重载" << endl;
+            cout << "string& operator=(string& s) 拷贝赋值" << endl;
             return *this;
         }
 
