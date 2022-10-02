@@ -353,7 +353,7 @@ void test_thread()
     thdsv.resize(n);
 
     for (auto& td : thdsv) {
-        td = thread(print, 1, 10, 1);
+        td = thread(Print, 1, 10, 1);
     }
 
     for (auto& td : thdsv) {
