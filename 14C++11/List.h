@@ -42,8 +42,8 @@ namespace test
             // Node* newNode = new Node;
             // newNode->_data = std::forward<T>(x);
 
-            Node* newNode = (Node*)malloc(sizeof(Node));
-            new(&newNode->_data)T(std::forward<T>(x));
+            Node* newnode = (Node*)malloc(sizeof(Node));
+            new(&newnode->_data)T(std::forward<T>(x));
 
             prev->_next = newnode;
             newnode->_prev = prev;

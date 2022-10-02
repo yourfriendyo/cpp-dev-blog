@@ -3,6 +3,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <algorithm>
 #include "List.h"
 #include "String.h"
 
@@ -176,10 +177,74 @@ void test_right_value_ref()
 
 }
 
+struct Good
+{
+    string _name;
+    double _price;
+    int _eval; // 评分
+    Good(const char* name, double price, int eval)
+        :_name(name), _price(price), _eval(eval)
+    {}
+};
+
+struct CompareByPrice {
+    // price 升序
+    bool operator()(const Good& g1, const Good& g2) {
+        return g1._price > g2._price;
+    }
+};
+
 void test_lambda()
 {
+    int a = 1, b = 2;
+    auto swap1 = [](int& x, int& y) { // 引用传参
+        int tmp = x;
+        x = y;
+        y = tmp;
+    };
+
+    auto swap2 = [a, b]() mutable {  // mutable 去除变量的const常属性，但不影响传值调用
+        int tmp = a;
+        a = b;
+        b = tmp;
+    };
+
+    auto swap3 = [&a, &b]() { // 引用捕捉
+        int tmp = a;
+        a = b;
+        b = tmp;
+    };
+
+    auto swap4 = [&]() mutable { // 全引用捕捉
+        int tmp = a;
+        a = b;
+        b = tmp;
+    };
+
+    [=]() {};
+
+    // swap(a, b);
+    // swap3();
+    //
+    // cout << "a:" << a << " - " << "b:" << b << endl;
+
+    vector<Good> v = { {"apple", 2.1, 5} ,{"banana", 3,4} , {"orange", 2.2, 4} };
+    // sort(v.begin(), v.end(), CompareByPrice());
+
+    sort(v.begin(), v.end(), [](Good& g1, Good& g2) { return g1._price > g2._price; });
+    sort(v.begin(), v.end(), [](Good& g1, Good& g2) { return g1._price < g2._price; });
+
+    sort(v.begin(), v.end(), [](Good& g1, Good& g2) { return g1._eval > g2._eval; });
+    sort(v.begin(), v.end(), [](Good& g1, Good& g2) { return g1._eval < g2._eval; });
 
 }
+
+// void Swap(int a, int b) const 只有成员函数才有const一说
+// {
+//     int t = a;
+//     a = b;
+//     b = t;
+// }
 
 int main()
 {
@@ -187,7 +252,10 @@ int main()
     // test_initializer_list();
     // test_type_declare();
     // test_right_value_ref();
-    test_lambda();
+
+    // test_lambda();
+
+
 
 
     return 0;
