@@ -194,7 +194,7 @@ struct CompareByPrice {
     }
 };
 
-void test_lambda()
+void test_lambda_express()
 {
     int a = 1, b = 2;
     auto swap1 = [](int& x, int& y) { // 引用传参
@@ -228,15 +228,16 @@ void test_lambda()
     //
     // cout << "a:" << a << " - " << "b:" << b << endl;
 
-    vector<Good> v = { {"apple", 2.1, 5} ,{"banana", 3,4} , {"orange", 2.2, 4} };
+    vector<Good> v = { {"apple", 1, 5} ,{"banana", 3, 4} , {"orange", 2.2, 3} };
     // sort(v.begin(), v.end(), CompareByPrice());
 
     sort(v.begin(), v.end(), [](Good& g1, Good& g2) { return g1._price > g2._price; });
     sort(v.begin(), v.end(), [](Good& g1, Good& g2) { return g1._price < g2._price; });
-
     sort(v.begin(), v.end(), [](Good& g1, Good& g2) { return g1._eval > g2._eval; });
     sort(v.begin(), v.end(), [](Good& g1, Good& g2) { return g1._eval < g2._eval; });
 
+    auto lamdba = []() {};
+    cout << typeid(lamdba).name() << endl;
 }
 
 // void Swap(int a, int b) const 只有成员函数才有const一说
@@ -246,15 +247,20 @@ void test_lambda()
 //     b = t;
 // }
 
+void test_thread()
+{
+
+}
+
 int main()
 {
 
     // test_initializer_list();
     // test_type_declare();
     // test_right_value_ref();
+    // test_lambda_express();
 
-    // test_lambda();
-
+    test_thread();
 
 
 
