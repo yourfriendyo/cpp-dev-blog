@@ -6,11 +6,11 @@
 #include <algorithm>
 #include <functional>
 #include <thread>
+#include <mutex>
 #include "List.h"
 #include "String.h"
 
-using std::cout;
-using std::endl;
+using namespace std;
 
 struct Point
 {
@@ -352,40 +352,38 @@ void test_variadic_templates()
 //         return x / 2;
 //     }
 // };
-
-int f(int a, int b) {
-    return a + b;
-}
-
-struct Functor {
-    int operator()(int x, int y) {
-        return x + y;
-    }
-};
-
-class Plus {
-public:
-    int plusi(int a, int b) {
-        return a + b;
-    }
-    double plusd(double a, double b) {
-        return a + b;
-    }
-};
-
-int SubFunc(int a, int b)
-{
-    return a - b;
-}
-
-class Sub
-{
-public:
-    int sub(int a, int b)
-    {
-        return a - b;
-    }
-};
+//
+// int f(int a, int b) {
+//     return a + b;
+// }
+//
+// struct Functor {
+//     int operator()(int x, int y) {
+//         return x + y;
+//     }
+// };
+//
+// class Plus {
+// public:
+//     int plusi(int a, int b) {
+//         return a + b;
+//     }
+//     double plusd(double a, double b) {
+//         return a + b;
+//     }
+// };
+//
+// int SubFunc(int a, int b) {
+//     return a - b;
+// }
+//
+// class Sub
+// {
+// public:
+//     int sub(int a, int b) {
+//         return a - b;
+//     }
+// };
 
 void test_function_adapter()
 {
@@ -405,46 +403,43 @@ void test_function_adapter()
     // cout << f4(Plus(), 1.0, 2.0) << endl;
 
     // bind
-    function<int(int, int)> f1 = bind(SubFunc, placeholders::_1, placeholders::_2);
-    function<int(int, int)> f2 = bind(SubFunc, placeholders::_2, placeholders::_1);
-    cout << f1(2, 1) << endl;
-    cout << f2(1, 2) << endl;
+    // function<int(int, int)> f1 = bind(SubFunc, placeholders::_1, placeholders::_2);
+    // function<int(int, int)> f2 = bind(SubFunc, placeholders::_2, placeholders::_1);
+    // cout << f1(2, 1) << endl;
+    // cout << f2(1, 2) << endl;
 
-    function<int(Sub&, int, int)> f3 = &Sub::sub;
-    cout << f3(Sub(), 2, 1) << endl;
+    // function<int(Sub&, int, int)> f3 = &Sub::sub;
+    // cout << f3(Sub(), 2, 1) << endl;
 
-    function<int(int, int)> f4 = bind(&Sub::sub, Sub(), placeholders::_1, placeholders::_2);
-    cout << f4(2, 1) << endl;
+    // function<int(int, int)> f4 = bind(&Sub::sub, Sub(), placeholders::_1, placeholders::_2);
+    // cout << f4(2, 1) << endl;
 
 
 }
 
-void Print(int l, int r, int x)
+void Routine(mutex& mtx, int& x, int n)
 {
-    // for (int i = l; i < r; ++i) {
-    //     cout << i * x << endl;
-    // }
-    // cout << "id: " << this->get_id();
+    mtx.lock();
+    while (n--)
+    {
+        cout << this_thread::get_id() << " -> " << x << endl;
+        ++x;
+    }
+    mtx.unlock();
 }
 
 void test_thread()
 {
-    // thread t1;
-    // thread t2(Print, 1, 20, 2);
-    // t2.join();
+    int x = 0;
+    mutex mtx;
 
-    int n;
-    cin >> n;
-    vector<thread> thdsv;
-    thdsv.resize(n);
+    thread t1(Routine, std::ref(mtx), std::ref(x), 10000);
+    thread t2(Routine, std::ref(mtx), std::ref(x), 10000);
 
-    for (auto& td : thdsv) {
-        td = thread(Print, 1, 10, 1);
-    }
+    t1.join();
+    t2.join();
 
-    for (auto& td : thdsv) {
-        td.join();
-    }
+    cout << x << endl;
 
 }
 
@@ -457,10 +452,10 @@ int main()
     // test_lambda_express();
     // test_move_member_func();
     // test_variadic_templates();
+    // test_function_adapter();
 
-    // test_thread();
+    test_thread();
 
-    test_function_adapter();
 
 
 
