@@ -422,7 +422,7 @@ void Routine(mutex& mtx, int& x, int n)
     mtx.lock();
     while (n--)
     {
-        cout << this_thread::get_id() << " -> " << x << endl;
+        // cout << this_thread::get_id() << " -> " << x << endl;
         ++x;
     }
     mtx.unlock();
@@ -433,14 +433,13 @@ void test_thread()
     int x = 0;
     mutex mtx;
 
-    thread t1(Routine, std::ref(mtx), std::ref(x), 10000);
-    thread t2(Routine, std::ref(mtx), std::ref(x), 10000);
+    thread t1(Routine, std::ref(mtx), std::ref(x), 100000);
+    thread t2(Routine, std::ref(mtx), std::ref(x), 100000);
 
     t1.join();
     t2.join();
 
     cout << x << endl;
-
 }
 
 int main()
@@ -453,11 +452,7 @@ int main()
     // test_move_member_func();
     // test_variadic_templates();
     // test_function_adapter();
-
     test_thread();
-
-
-
 
     return 0;
 }
