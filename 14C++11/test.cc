@@ -417,30 +417,90 @@ void test_function_adapter()
 
 }
 
-void Routine(mutex& mtx, int& x, int n)
-{
-    mtx.lock();
-    while (n--)
-    {
-        // cout << this_thread::get_id() << " -> " << x << endl;
-        ++x;
-    }
-    mtx.unlock();
-}
+// void Routine(mutex& mtx, int& x, int n)
+// {
+//     mtx.lock();
+//     while (n--)
+//     {
+//         // cout << this_thread::get_id() << " -> " << x << endl;
+//         ++x;
+//     }
+//     mtx.unlock();
+// }
+//
+// void test_thread_routine()
+// {
+//     // int x = 0;
+//     mutex mtx;
+//
+//     // thread t1(routine, std::ref(mtx), std::ref(x), 100000);
+//     // thread t2(routine, std::ref(mtx), std::ref(x), 100000);
+//     t1.join();
+//     t2.join();
+//
+//     cout << x << endl;
+// }
+//
+// void Routine(atomic<int>& x, int n)
+// {
+//     while (n--)
+//     {
+//         // cout << this_thread::get_id() << " -> " << x << endl;
+//         x.fetch_add(1);
+//     }
+// }
+//
+// void test_thread_routine()
+// {
+//     atomic<int> x = 0;
+//
+//     thread t1(Routine, std::ref(x), 100000);
+//     thread t2(Routine, std::ref(x), 100000);
+//     t1.join();
+//     t2.join();
+//
+//     cout << x << endl;
+// }
+
 
 void test_thread()
 {
+    // test_thread_routine();
+
     int x = 0;
     mutex mtx;
+    int N = 10000;
 
-    thread t1(Routine, std::ref(mtx), std::ref(x), 100000);
-    thread t2(Routine, std::ref(mtx), std::ref(x), 100000);
+    int cnt_time = 0;
 
+    thread t1([&]() {
+        int begin1 = clock();
+        mtx.lock();
+        while (N--)
+            x++;
+        mtx.unlock();
+        int end1 = clock();
+        cnt_time += end1 - begin1;
+        }
+    );
+    thread t2([&]() {
+        int begin2 = clock();
+        mtx.lock();
+        while (N--)
+            x++;
+        mtx.unlock();
+        int end2 = clock();
+        cnt_time += end2 - begin2;
+        }
+    );
     t1.join();
     t2.join();
 
     cout << x << endl;
+    cout << cnt_time << endl;
+
 }
+
 
 int main()
 {
