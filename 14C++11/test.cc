@@ -4,6 +4,7 @@
 #include <list>
 #include <map>
 #include <algorithm>
+#include <functional>
 #include <thread>
 #include "List.h"
 #include "String.h"
@@ -332,31 +333,89 @@ void test_variadic_templates()
     ShowList(1, "A", 1.1);
 }
 
-template <class F, class T>
-T useF(F f, T x)
-{
-    static int cnt = 0;
-    cout << (++cnt) << endl;
-    cout << (&cnt) << endl;
+// template <class F, class T>
+// T useF(F f, T x)
+// {
+//     static int cnt = 0;
+//     cout << (++cnt) << endl;
+//     cout << (&cnt) << endl;
+//
+//     return f(x);
+// }
+//
+// double f(double i) {
+//     return i / 2;
+// }
+//
+// struct Functor {
+//     double operator()(double x) {
+//         return x / 2;
+//     }
+// };
 
-    return f(x);
-}
-
-double f(double i) {
-    return i / 2;
+int f(int a, int b) {
+    return a + b;
 }
 
 struct Functor {
-    double operator()(double x) {
-        return x / 2;
+    int operator()(int x, int y) {
+        return x + y;
+    }
+};
+
+class Plus {
+public:
+    int plusi(int a, int b) {
+        return a + b;
+    }
+    double plusd(double a, double b) {
+        return a + b;
+    }
+};
+
+int SubFunc(int a, int b)
+{
+    return a - b;
+}
+
+class Sub
+{
+public:
+    int sub(int a, int b)
+    {
+        return a - b;
     }
 };
 
 void test_function_adapter()
 {
-    cout << useF(f, 10.10) << std::endl;;
-    cout << useF(Functor(), 10.10) << std::endl;
-    cout << useF([](double x) {return x / 2;}, 10.10) << std::endl;
+    // cout << useF(f, 10.10) << std::endl;;
+    // cout << useF(Functor(), 10.10) << std::endl;
+    // cout << useF([](double x) {return x / 2;}, 10.10) << std::endl;
+
+    // std::function<int(int, int)> f1 = f;
+    // cout << f1(1, 2) << endl;
+
+    // std::function<int(int, int)> f2 = Functor();
+    // cout << f2(1, 2) << endl;
+
+    // std::function<int(Plus&, int, int)> f3 = &Plus::plusi;
+    // cout << f3(Plus(), 1, 2) << endl;
+    // std::function<double(Plus&, double, double)> f4 = &Plus::plusd;
+    // cout << f4(Plus(), 1.0, 2.0) << endl;
+
+    // bind
+    function<int(int, int)> f1 = bind(SubFunc, placeholders::_1, placeholders::_2);
+    function<int(int, int)> f2 = bind(SubFunc, placeholders::_2, placeholders::_1);
+    cout << f1(2, 1) << endl;
+    cout << f2(1, 2) << endl;
+
+    function<int(Sub&, int, int)> f3 = &Sub::sub;
+    cout << f3(Sub(), 2, 1) << endl;
+
+    function<int(int, int)> f4 = bind(&Sub::sub, Sub(), placeholders::_1, placeholders::_2);
+    cout << f4(2, 1) << endl;
+
 
 }
 
