@@ -539,9 +539,18 @@ void test_thread_pool()
     }
 }
 
+void ThreadFunc(int& x)
+{
+    x += 10;
+}
+
 void test_condition_variable()
 {
+    int n = 0;
+    thread t1(ThreadFunc, std::ref(n));
+    t1.join();
 
+    cout << n << endl;
 }
 
 void test_thread()
@@ -551,8 +560,6 @@ void test_thread()
     // test_atomic();
     // test_thread_pool();
     test_condition_variable();
-
-
 }
 
 int main()
