@@ -537,7 +537,10 @@ void test_thread_pool()
     for (auto& td : thds) {
         td.join();
     }
+}
 
+void test_condition_variable()
+{
 
 }
 
@@ -546,9 +549,8 @@ void test_thread()
 
     // test_thread_routine();
     // test_atomic();
-    test_thread_pool();
-
-
+    // test_thread_pool();
+    test_condition_variable();
 
 
 }
