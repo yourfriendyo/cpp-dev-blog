@@ -547,6 +547,7 @@ void ThreadFunc(int& x)
 void test_condition_variable()
 {
     int n = 0;
+    //
     thread t1(ThreadFunc, std::ref(n));
     t1.join();
 
