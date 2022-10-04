@@ -462,37 +462,48 @@ void test_function_adapter()
 //     cout << x << endl;
 // }
 
-
-void test_thread()
+void test_atomic()
 {
-    // test_thread_routine();
-
     int x = 0;
+    // atomic<int> x = 0;
     mutex mtx;
-    int N = 10000;
+    int N = 1000000;
 
     int cnt_time = 0;
 
     thread t1([&]() {
         int begin1 = clock();
-        mtx.lock();
-        while (N--)
+        // mtx.lock();
+        int i = 0;
+        while (i++ < N)
+        {
+            mtx.lock();
             x++;
-        mtx.unlock();
+            mtx.unlock();
+        }
+
+        // mtx.unlock();
         int end1 = clock();
         cnt_time += end1 - begin1;
         }
     );
     thread t2([&]() {
         int begin2 = clock();
-        mtx.lock();
-        while (N--)
+        // mtx.lock();
+        int i = 0;
+        while (i++ < N)
+        {
+            mtx.lock();
             x++;
-        mtx.unlock();
+            mtx.unlock();
+        }
+
+        // mtx.unlock();
         int end2 = clock();
         cnt_time += end2 - begin2;
         }
     );
+
     t1.join();
     t2.join();
 
@@ -501,6 +512,45 @@ void test_thread()
 
 }
 
+void test_thread_pool()
+{
+    atomic<int> x = 0;
+    int N, M;
+    cin >> N >> M;
+
+    vector<thread> thds;
+    thds.resize(N);
+
+    for (auto& td : thds) {
+        td = thread([&x, M]() {
+            int i = 0;
+            while (i++ < M)
+            {
+                cout << this_thread::get_id() << "->" << x << endl;
+                x++;
+            }
+            }
+        );
+    }
+
+    for (auto& td : thds) {
+        td.join();
+    }
+
+
+}
+
+void test_thread()
+{
+
+    // test_thread_routine();
+    // test_atomic();
+    test_thread_pool();
+
+
+
+
+}
 
 int main()
 {
