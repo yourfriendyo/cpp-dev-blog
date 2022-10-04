@@ -527,6 +527,7 @@ void test_thread_pool()
             while (i++ < M)
             {
                 cout << this_thread::get_id() << "->" << x << endl;
+                this_thread::sleep_for(std::chrono::seconds(1));
                 x++;
             }
             }
