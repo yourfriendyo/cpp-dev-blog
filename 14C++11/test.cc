@@ -1,3 +1,5 @@
+#pragma warning(suppress : 4996)
+#define _CRT_SECURE_NO_WARNINGS 1
 #include <iostream>
 #include <string>
 #include <vector>
@@ -325,11 +327,7 @@ void ShowList(TypeSet... args)
 {
     int arr[] = { ShowArgs(args)... }; // 利用列表初始化过程
 }
-
-void test_variadic_templates()
-{
-    // ShowList(1);
-    // ShowList(1, "A");
+void test_variadic_templates() { // ShowList(1); // ShowList(1, "A");
     ShowList(1, "A", 1.1);
 }
 
@@ -539,19 +537,34 @@ void test_thread_pool()
     }
 }
 
-void ThreadFunc(int& x)
+void ThreadFunc(vector<int>& v, int n, int base)
 {
-    x += 10;
+    int i = 0;
+    while (i++ < n)
+    {
+        v.push_back(base + i);
+    }
+}
+
+void test_lock()
+{
+    vector<int> v;
+    //v.resize(2000);
+
+    thread t1(ThreadFunc, std::ref(v), 10000, 100000);
+    thread t2(ThreadFunc, std::ref(v), 10000, 200000);
+
+    t1.join();
+    t2.join();
+
+    for (auto& e : v) {
+        cout << e << " ";
+    }
+
 }
 
 void test_condition_variable()
-{
-    int n = 0;
-    thread t1(ThreadFunc, std::ref(n));
-    t1.join();
-
-    cout << n << endl;
-}
+{}
 
 void test_thread()
 {
@@ -559,6 +572,8 @@ void test_thread()
     // test_thread_routine();
     // test_atomic();
     // test_thread_pool();
+    test_lock();
+
     test_condition_variable();
 }
 
