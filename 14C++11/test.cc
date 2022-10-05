@@ -564,7 +564,28 @@ void test_lock()
 }
 
 void test_condition_variable()
-{}
+{
+    int n = 1000;
+    int i = 0;
+    condition_variable cv;
+
+    thread t1([n, &i, &cv]() {
+        while (i < n) {
+            cout << this_thread::get_id() << " i: " << i << endl;
+            i++;
+        }
+        });
+    thread t2([n, &i, &cv]() {
+        while (i < n) {
+            cout << this_thread::get_id() << " i: " << i << endl;
+            i++;
+        }
+        });
+
+    t1.join();
+    t2.join();
+
+}
 
 void test_thread()
 {
@@ -572,7 +593,7 @@ void test_thread()
     // test_thread_routine();
     // test_atomic();
     // test_thread_pool();
-    test_lock();
+    // test_lock();
 
     test_condition_variable();
 }
