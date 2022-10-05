@@ -9,6 +9,7 @@
 #include <functional>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 #include "List.h"
 #include "String.h"
 
@@ -563,25 +564,57 @@ void test_lock()
 
 }
 
+class getFlag
+{
+    bool operator()(const bool flag)
+    {
+        return flag;
+    }
+};
 void test_condition_variable()
 {
-    int n = 1000;
+    int n = 100;
     int i = 0;
+
+    mutex mtx;
+    //unique_lock<mutex> lck(mtx);
     condition_variable cv;
 
-    thread t1([n, &i, &cv]() {
-        while (i < n) {
-            cout << this_thread::get_id() << " i: " << i << endl;
-            i++;
-        }
-        });
-    thread t2([n, &i, &cv]() {
-        while (i < n) {
-            cout << this_thread::get_id() << " i: " << i << endl;
-            i++;
-        }
-        });
+    bool flag = false;
 
+    /// |------------------------------------------------|
+    /// | flag  | getFlag() |  pred() | !pred() |  wait  |
+    /// |-------|-----------|---------|---------|--------|
+    /// |   1   |     1     |    1    |    0    |   0    |
+    /// |   0   |     0     |    0    |    1    |   1    |
+    /// |------------------------------------------------|
+
+    thread t1([&, n]() {
+        unique_lock<mutex> lck(mtx);
+        while (i < n)
+        {
+            cv.wait(lck, [&flag]() {return !flag;});// flag false -> !pred() false 进
+
+            cout << this_thread::get_id() << " i: " << i << endl;
+            i++;
+
+            flag = true;
+            cv.notify_one();
+        }
+        });
+    thread t2([&, n]() {
+        unique_lock<mutex> lck(mtx);
+        while (i < n)
+        {
+            cv.wait(lck, [&flag]() {return flag;}); // flag true -> !pred() false 进
+
+            cout << this_thread::get_id() << " i: " << i << endl;
+            i++;
+
+            flag = false;
+            cv.notify_one();
+        }
+        });
     t1.join();
     t2.join();
 
