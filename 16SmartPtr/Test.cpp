@@ -48,7 +48,6 @@ public:
         delete _ptr;
     }
 
-
 private:
     T* _ptr;
 };
