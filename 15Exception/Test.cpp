@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <ctime>
 #include <thread>
 #include "String.h"
@@ -173,9 +174,29 @@ void ServerStart()
     }
 }
 
+//void test_throw() throw(std::bad_alloc);
+
+void test_throw() noexcept
+{
+    throw 1;
+    //throw "cao";
+    cout << "test" << endl;
+}
+
 int main()
 {
-    ServerStart();
+    test_throw();
+    // ServerStart();
+    // try
+    // {
+    //     vector<int> v;
+    //     v.reserve(10000000000);
+
+    // }
+    // catch (const exception& e)
+    // {
+    //     cout << e.what() << endl;
+    // }
 
     return 0;
 }
