@@ -1,4 +1,6 @@
 #include <iostream>
+#include <thread>
+#include <atomic>
 #include <memory>
 using namespace std;
 
@@ -148,8 +150,8 @@ namespace test
     {
     public:
         shared_ptr(T* ptr)
-            : _ptr(new int(0))
-            , _pUseCount(new int(1)) // 为资源配一个引用计数
+            : _ptr(new T())
+            , _pUseCount(new atomic<int>(1)) // 为资源配一个引用计数
         {}
 
         shared_ptr(const shared_ptr<T>& sp)
@@ -184,6 +186,14 @@ namespace test
         {
             return *_ptr;
         }
+        int use_count()
+        {
+            return *_pUseCount;
+        }
+        T* get()
+        {
+            return _ptr;
+        }
 
         void Release()
         {
@@ -202,21 +212,56 @@ namespace test
 
     private:
         T* _ptr;
-        int* _pUseCount; // 引用计数
+        atomic<int>* _pUseCount; // 引用计数
     };
+
+    struct Date
+    {
+        int _year = 0;
+        int _month = 0;
+        int _day = 0;
+    };
+
+    void SharedPtrFunc(shared_ptr<Date>& sp, size_t n)
+    {
+        for (size_t i = 0; i < n; ++i)
+        {
+            shared_ptr<Date> copy(sp); // 测试引用计数线程安全
+
+            // 测试资源的线程安全
+            ++copy->_year;
+            ++copy->_month;
+            ++copy->_day;
+        }
+    }
 
     void test_shared_ptr()
     {
-        shared_ptr<int> sp1(new int);
-        shared_ptr<int> sp2(sp1);
-        shared_ptr<int> sp3(sp2);
+        // shared_ptr<int> sp1(new int);
+        // shared_ptr<int> sp2(sp1);
+        // shared_ptr<int> sp3(sp2);
+        //
+        // shared_ptr<int> sp4(new int);
+        // shared_ptr<int> sp5(sp4);
+        //
+        // sp1 = sp4;
+        // sp2 = sp4;
+        // sp3 = sp4;
 
-        shared_ptr<int> sp4(new int);
-        shared_ptr<int> sp5(sp4);
+        shared_ptr<Date> p(new Date);
 
-        sp1 = sp4;
-        sp2 = sp4;
-        sp3 = sp4;
+        const size_t n = 100000;
+        thread t1(SharedPtrFunc, std::ref(p), n);
+        thread t2(SharedPtrFunc, std::ref(p), n);
+
+        t1.join();
+        t2.join();
+
+        cout << p->_year << endl;
+        cout << p->_month << endl;
+        cout << p->_day << endl;
+
+        cout << p.use_count() << endl;
     }
 
 }
