@@ -100,10 +100,97 @@ namespace test
     void test_unique_ptr()
     {
         std::unique_ptr<int> up1(new int);
-
         //std::unique_ptr<int> up2(up1); // 编译报错
-
     }
 
+    //template<class T>
+    //class shared_ptr
+    //{
+    //public:
+    //    shared_ptr(T* ptr)
+    //        : _ptr(new int)
+    //    {
+    //        _useCount = 1;
+    //    }
+    //
+    //    shared_ptr(const shared_ptr<T>& sp)
+    //        : _ptr(sp._ptr)
+    //    {
+    //        _useCount++;
+    //    }
+    //
+    //    T* operator->()
+    //    {
+    //        return _ptr;
+    //    }
+    //    T& operator*()
+    //    {
+    //        return *_ptr;
+    //    }
+    //
+    //    ~shared_ptr()
+    //    {
+    //        if (--_useCount == 0) // 最后一个管理对象
+    //            delete _ptr;
+    //    }
+    //
+    //private:
+    //    T* _ptr;
+    //    static int _useCount; // 引用计数
+    //};
+    //
+    //template <class T>
+    //int shared_ptr<T>::_useCount = 0;
+
+    template<class T>
+    class shared_ptr
+    {
+    public:
+        shared_ptr(T* ptr)
+            : _ptr(new int(0))
+            , _pUseCount(new int(1)) // 为资源配一个引用计数
+        {}
+
+        shared_ptr(const shared_ptr<T>& sp)
+            : _ptr(sp._ptr)
+            , _pUseCount(sp._pUseCount)
+        {
+            (*_pUseCount)++;
+        }
+
+        T* operator->()
+        {
+            return _ptr;
+        }
+        T& operator*()
+        {
+            return *_ptr;
+        }
+
+        ~shared_ptr()
+        {
+            if (--(*_pUseCount) == 0) // 最后一个管理对象
+            {
+                cout << "delete" << _ptr << endl;
+                delete _ptr;
+                delete _pUseCount;
+            }
+        }
+
+
+    private:
+        T* _ptr;
+        int* _pUseCount; // 引用计数
+    };
+
+    void test_shared_ptr()
+    {
+        shared_ptr<int> sp1(new int);
+        shared_ptr<int> sp2(sp1);
+        shared_ptr<int> sp3(sp2);
+
+        shared_ptr<int> sp4(new int);
+
+    }
 
 }

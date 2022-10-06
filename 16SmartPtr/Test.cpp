@@ -91,7 +91,9 @@ using std::endl;
 
 int main()
 {
-    test::test_auto_ptr();
+    //test::test_auto_ptr();
+    //test::test_unique_ptr();
+    test::test_shared_ptr();
 
     return 0;
 }
