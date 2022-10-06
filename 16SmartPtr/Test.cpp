@@ -1,6 +1,8 @@
 #include <iostream>
+#include "SmartPtr.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
 
 // int div()
 // {
@@ -36,29 +38,60 @@ using namespace std;
 //     return 0;
 // }
 
-template <class T>
-class SmartPtr
-{
-public:
-    SmartPtr(T* ptr) : _ptr(ptr)
-    {}
-
-    ~SmartPtr()
-    {
-        delete _ptr;
-    }
-
-private:
-    T* _ptr;
-};
+// template <class T>
+// class SmartPtr
+// {
+// public:
+//     SmartPtr(T* ptr) : _ptr(ptr)
+//     {}
+//
+//     //SmartPtr(const SmartPtr& sp)// = delete;
+//
+//     T& operator*() {
+//         return *_ptr;
+//     }
+//     T& operator->() {
+//         return _ptr;
+//     }
+//
+//     SmartPtr& operator++() {
+//         ++_ptr;
+//     }
+//     SmartPtr& operator--() {
+//         --_ptr;
+//     }
+//
+//     ~SmartPtr() {
+//         delete _ptr;
+//     }
+//
+// private:
+//     T* _ptr;
+// };
+//
+// int main()
+// {
+//     SmartPtr<int> sp1 = new int;
+//
+//     int* p2 = new int;
+//     SmartPtr<int> sp2 = p2;
+//
+//     (*sp1) = 0;
+//
+//     (*sp1)++;
+//     cout << *sp1 << endl;
+//     (*sp1)++;
+//     cout << *sp1 << endl;
+//
+//     SmartPtr<int> sp3(sp1);
+//
+//
+//     return 0;
+// }
 
 int main()
 {
-    SmartPtr<int> sp1 = new int;
-
-    int* p2 = new int;
-    SmartPtr<int> sp2 = p2;
-
+    test::test_auto_ptr();
 
     return 0;
 }
