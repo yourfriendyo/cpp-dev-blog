@@ -177,7 +177,6 @@ namespace test
             }
         }
 
-
     private:
         T* _ptr;
         int* _pUseCount; // 引用计数
