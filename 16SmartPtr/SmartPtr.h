@@ -221,7 +221,7 @@ namespace test
     {
     public:
         shared_ptr(T* ptr)
-            : _ptr(new T())
+            : _ptr(ptr)
             , _pUseCount(new int(1)) // 为资源配一个引用计数
             , _pmtx(new mutex)
         {}
@@ -236,11 +236,11 @@ namespace test
 
         void AddRef()
         {
-            _pmtx->lock();
+            _pmtx->lock(); // 加锁
 
             (*_pUseCount)++;
 
-            _pmtx->unlock();
+            _pmtx->unlock(); // 解锁
         }
 
         shared_ptr<T>& operator=(const shared_ptr<T>& sp)
@@ -275,17 +275,19 @@ namespace test
 
         void Release()
         {
-            _pmtx->lock();
+            _pmtx->lock(); // 加锁
             bool flg = false;
 
             if (--(*_pUseCount) == 0) // 最后一个管理对象
             {
-                cout << "delete: " << _ptr << endl;
+                if (_ptr)
+                    cout << "delete: " << _ptr << endl;
+
                 delete _ptr;
                 delete _pUseCount;
                 flg = true;
             }
-            _pmtx->unlock();
+            _pmtx->unlock(); // 解锁
 
             if (flg) delete _pmtx;
         }
@@ -330,7 +332,10 @@ namespace test
         shared_ptr<ListNode> _prev = nullptr;
         shared_ptr<ListNode> _next = nullptr;
 
-        ListNode() = default;
+        ~ListNode()
+        {
+            cout << "~ListNode()" << endl;
+        }
     };
 
     void test_shared_ptr()
@@ -361,8 +366,8 @@ namespace test
         // cout << p->_day << endl;
         // cout << p.use_count() << endl;
 
-        shared_ptr<ListNode> n1 = new ListNode;
-        shared_ptr<ListNode> n2 = new ListNode;
+        shared_ptr<ListNode> n1(new ListNode);
+        shared_ptr<ListNode> n2(new ListNode);
 
         n1->_next = n2;
         n2->_prev = n1;
