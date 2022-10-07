@@ -338,40 +338,40 @@ namespace test
     //     }
     // };
 
-    void test_shared_ptr()
-    {
-        shared_ptr<int> sp1(new int);
-        shared_ptr<int> sp2(sp1);
-        shared_ptr<int> sp3(sp2);
-
-        shared_ptr<int> sp4(new int);
-        shared_ptr<int> sp5(sp4);
-
-        sp1 = sp4;
-        sp2 = sp4;
-        sp3 = sp4;
-
-        shared_ptr<Date> p(new Date);
-
-        const size_t n = 100000;
-        mutex mtx;
-        thread t1(SharedPtrFunc, std::ref(p), n, std::ref(mtx));
-        thread t2(SharedPtrFunc, std::ref(p), n, std::ref(mtx));
-
-        t1.join();
-        t2.join();
-
-        cout << p->_year << endl;
-        cout << p->_month << endl;
-        cout << p->_day << endl;
-        cout << p.use_count() << endl;
-
-        shared_ptr<ListNode> n1(new ListNode);
-        shared_ptr<ListNode> n2(new ListNode);
-
-        n1->_next = n2;
-        n2->_prev = n1;
-    }
+    // void test_shared_ptr()
+    // {
+    //     shared_ptr<int> sp1(new int);
+    //     shared_ptr<int> sp2(sp1);
+    //     shared_ptr<int> sp3(sp2);
+    //
+    //     shared_ptr<int> sp4(new int);
+    //     shared_ptr<int> sp5(sp4);
+    //
+    //     sp1 = sp4;
+    //     sp2 = sp4;
+    //     sp3 = sp4;
+    //
+    //     shared_ptr<Date> p(new Date);
+    //
+    //     const size_t n = 100000;
+    //     mutex mtx;
+    //     thread t1(SharedPtrFunc, std::ref(p), n, std::ref(mtx));
+    //     thread t2(SharedPtrFunc, std::ref(p), n, std::ref(mtx));
+    //
+    //     t1.join();
+    //     t2.join();
+    //
+    //     cout << p->_year << endl;
+    //     cout << p->_month << endl;
+    //     cout << p->_day << endl;
+    //     cout << p.use_count() << endl;
+    //
+    //     shared_ptr<ListNode> n1(new ListNode);
+    //     shared_ptr<ListNode> n2(new ListNode);
+    //
+    //     n1->_next = n2;
+    //     n2->_prev = n1;
+    // }
 
     template <class T>
     class weak_ptr
