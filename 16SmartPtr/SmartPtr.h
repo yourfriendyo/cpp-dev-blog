@@ -381,11 +381,15 @@ namespace test
             : _ptr(ptr)
         {}
 
-        ~weak_ptr()
-        {}
-
         weak_ptr(const weak_ptr<T>& wp)
             : _ptr(wp._ptr)
+        {}
+
+        weak_ptr(const shared_ptr<T>& sp)
+            : _ptr(sp.get())
+        {}
+
+        ~weak_ptr()
         {}
 
         weak_ptr<T>& operator=(const weak_ptr<T>& wp)
@@ -424,6 +428,11 @@ namespace test
 
     void test_weak_ptr()
     {
+        shared_ptr<ListNode> n1(new ListNode);
+        shared_ptr<ListNode> n2(new ListNode);
+
+        n1->_next = n2;
+        n2->_prev = n1;
 
     }
 
