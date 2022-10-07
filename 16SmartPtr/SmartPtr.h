@@ -268,7 +268,7 @@ namespace test
         {
             return *_pUseCount;
         }
-        T* get()
+        T* get() const
         {
             return _ptr;
         }
@@ -377,10 +377,8 @@ namespace test
     class weak_ptr
     {
     public:
-        weak_ptr(T* ptr)
-            : _ptr(ptr)
+        weak_ptr() : _ptr(nullptr)
         {}
-
         weak_ptr(const weak_ptr<T>& wp)
             : _ptr(wp._ptr)
         {}
@@ -392,12 +390,14 @@ namespace test
         ~weak_ptr()
         {}
 
+        weak_ptr<T>& operator=(const shared_ptr<T>& sp)
+        {
+            _ptr = sp.get();
+            return *this;
+        }
         weak_ptr<T>& operator=(const weak_ptr<T>& wp)
         {
-            if (wp._ptr != _ptr)
-            {
-                _ptr = wp._ptr;
-            }
+            _ptr = wp._ptr;
             return *this;
         }
 
@@ -417,8 +417,8 @@ namespace test
     struct ListNode
     {
         int _val = 0;
-        weak_ptr<ListNode> _prev = nullptr;
-        weak_ptr<ListNode> _next = nullptr;
+        weak_ptr<ListNode> _prev;
+        weak_ptr<ListNode> _next;
 
         ~ListNode()
         {
