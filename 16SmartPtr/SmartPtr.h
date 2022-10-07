@@ -71,7 +71,7 @@ namespace test
         {}
 
         unique_ptr(const unique_ptr<T>& sp) = delete;
-        unique_ptr<T> operator=(const unique_ptr& sp) = delete;
+        unique_ptr<T>& operator=(const unique_ptr& sp) = delete;
 
         T& operator*()
         {
