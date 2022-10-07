@@ -4,18 +4,47 @@ using namespace std;
 
 namespace deleter
 {
-    class A
+    template <class T>
+    struct default_delete
     {
-    public:
+        void operator()(const T* ptr)
+        {
+            cout << "default_delete: " << ptr << endl;
+            delete ptr;
+        }
+    };
+
+    template <class T>
+    struct delete_array
+    {
+        void operator()(const T* ptr)
+        {
+            cout << "delete_array: " << ptr << endl;
+            delete[] ptr;
+        }
+    };
+
+    struct delete_file
+    {
+        void operator()(FILE* ptr)
+        {
+            cout << "delete_file: " << ptr << endl;
+            fclose(ptr);
+        }
+    };
+
+
+    struct A
+    {
         ~A()
         {
             cout << "~A()" << endl;
         }
-    private:
+
         int _a;
     };
 
-    template <class T> //, class D = default_delete>
+    template <class T, class D = default_delete<T>>
     class unique_ptr
     {
     public:
@@ -28,7 +57,7 @@ namespace deleter
 
         ~unique_ptr()
         {
-            delete _ptr;
+            D()(_ptr);
         }
 
         T& operator*()
@@ -50,8 +79,13 @@ namespace deleter
 
     void test_deleter()
     {
-        A* p = new A[10];
-        delete[] p;
+        // A* p = new A[10];
+        // delete[] p;
 
+        unique_ptr<A> up1(new A);
+
+        unique_ptr<A, delete_array<A>> up2(new A[2]);
+
+        unique_ptr<FILE, delete_file> up3(new FILE);
     }
 };
