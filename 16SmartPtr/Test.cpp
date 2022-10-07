@@ -1,5 +1,6 @@
 #include <iostream>
 #include "SmartPtr.h"
+#include "Deleter.h"
 
 using std::cout;
 using std::endl;
@@ -94,7 +95,8 @@ int main()
     //test::test_auto_ptr();
     //test::test_unique_ptr();
     //test::test_shared_ptr();
-    test::test_weak_ptr();
+    //test::test_weak_ptr();
+    deleter::test_deleter();
 
     return 0;
 }
