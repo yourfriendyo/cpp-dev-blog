@@ -1,4 +1,5 @@
 #include <iostream>
+#include "SingleTon.h"
 using namespace std;
 
 // 只能在堆上创建对象
@@ -29,7 +30,6 @@ void testHeapOnly()
     // HeapOnly* pho = new HeapOnly;
 }
 
-
 class StackOnly
 {
 public:
@@ -56,7 +56,6 @@ void testStackOnly()
     StackOnly so1 = StackOnly::getObj();
     //StackOnly* so2 = new StackOnly(so1); // 利用拷贝构造new一个对象
 }
-
 
 class CopyBan
 {
@@ -111,16 +110,6 @@ private:
 void testInhBan()
 {}
 
-/********************************************************************
- *      设计模式
- *  SingleTon 单例模式
- *
- **/
-
-void testSingleTon()
-{
-
-}
 
 int main()
 {
