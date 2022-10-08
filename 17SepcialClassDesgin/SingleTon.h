@@ -3,6 +3,12 @@
 #include <vector>
 #include <ctime>
 using namespace std;
+/*********************************
+ * 单例模式
+ * 饿汉模式搞对象
+ * 懒汉模式搞指针
+ *
+*/
 
 // int callCount = 0;
 // 饿汉模式
