@@ -6,8 +6,8 @@
 using namespace std;
 /*********************************
  * 单例模式
- * 饿汉模式搞对象
- * 懒汉模式搞指针
+ * 饿汉模式搞对象：简单无线程安全问题。无法控制多个单例资源的创建初始化顺序，占用启动时间
+ * 懒汉模式搞指针：优缺点和饿汉模式相反
  *
 */
 
@@ -110,7 +110,6 @@ private:
 CallInfo_Idler* CallInfo_Idler::_inst = nullptr;
 mutex CallInfo_Idler::_mtx;
 CallInfo_Idler::GC _gc;
-
 
 
 // 统计快排递归调用的次数
