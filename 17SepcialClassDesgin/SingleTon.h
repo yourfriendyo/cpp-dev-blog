@@ -5,14 +5,53 @@
 using namespace std;
 
 // int callCount = 0;
-class CallInfo
+// 饿汉模式
+class CallInfo_Eager
 {
 public:
-    static CallInfo* getInstance()
+    static CallInfo_Eager& getInstance()
+    {
+        return _inst;
+    }
+    void AddCallCount()
+    {
+        ++_callCount;
+    }
+
+    int getCallCount()
+    {
+        return _callCount;
+    }
+    void Push(const pair<int, int>& kv)
+    {
+        _v.push_back(kv);
+    }
+
+    CallInfo_Eager(const CallInfo_Eager& cl) = delete;
+    CallInfo_Eager& operator=(const CallInfo_Eager& cl) = delete;
+
+private:
+    CallInfo_Eager() : _callCount(0)
+    {}
+
+private:
+    int _callCount;
+    vector<pair<int, int>> _v;
+
+    static CallInfo_Eager _inst;
+};
+CallInfo_Eager CallInfo_Eager::_inst;
+
+
+// 懒汉模式
+class CallInfo_Idler
+{
+public:
+    static CallInfo_Idler* getInstance()
     {
         if (!_inst)
         {
-            _inst = new CallInfo();
+            _inst = new CallInfo_Idler();
         }
         return _inst;
     }
@@ -30,27 +69,29 @@ public:
         _v.push_back(kv);
     }
 
-    CallInfo(const CallInfo& cl) = delete;
-    CallInfo& operator=(const CallInfo& cl) = delete;
+    CallInfo_Idler(const CallInfo_Idler& cl) = delete;
+    CallInfo_Idler& operator=(const CallInfo_Idler& cl) = delete;
 
 private:
-    CallInfo() : _callCount(0)
+    CallInfo_Idler() : _callCount(0)
     {}
 
 private:
     int _callCount;
     vector<pair<int, int>> _v;
 
-    static CallInfo* _inst;
+    static CallInfo_Idler* _inst;
 };
 
-CallInfo* CallInfo::_inst = nullptr;
+CallInfo_Idler* CallInfo_Idler::_inst = nullptr;
 
 // 统计快排递归调用的次数
 void QuickSort(int* a, int left, int right)
 {
-    CallInfo::getInstance()->AddCallCount();
-    CallInfo::getInstance()->Push(make_pair(left, right));
+    //CallInfo_Eager::getInstance().AddCallCount();
+    //CallInfo_Eager::getInstance().Push(make_pair(left, right));
+    CallInfo_Idler::getInstance()->AddCallCount();
+    CallInfo_Idler::getInstance()->Push(make_pair(left, right));
 
     if (left >= right)
     {
@@ -92,9 +133,11 @@ void TestOP()
     int end1 = clock();
 
     cout << end1 - begin1 << endl;
-    cout << CallInfo::getInstance()->getCallCount() << endl;
+    // cout << CallInfo_Eager::getInstance().getCallCount() << endl;
+    cout << CallInfo_Idler::getInstance()->getCallCount() << endl;
 
-    delete a1;
+
+    delete[] a1;
 }
 
 void testSingleTon()
