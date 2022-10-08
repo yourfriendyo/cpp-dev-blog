@@ -113,8 +113,7 @@ void testInhBan()
 
 int main()
 {
-    // testSingleTon();
-    TestOP();
+    testSingleTon();
 
     return 0;
 }

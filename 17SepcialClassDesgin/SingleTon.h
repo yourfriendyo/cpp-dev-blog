@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <ctime>
+#include <mutex>
 using namespace std;
 /*********************************
  * 单例模式
@@ -19,11 +20,11 @@ public:
     {
         return _inst;
     }
+
     void AddCallCount()
     {
         ++_callCount;
     }
-
     int getCallCount()
     {
         return _callCount;
@@ -57,15 +58,30 @@ public:
     {
         if (!_inst)
         {
-            _inst = new CallInfo_Idler();
+            unique_lock<mutex> _mtx;
+            if (!_inst)
+                _inst = new CallInfo_Idler();
         }
         return _inst;
     }
+    // 内部类实现垃圾回收机制，随对象生命周期自动销毁
+    struct GC
+    {
+        ~GC()
+        {
+            if (_inst)
+            {
+                delete _inst;
+                _inst = nullptr;
+            }
+        }
+
+    };
+
     void AddCallCount()
     {
         ++_callCount;
     }
-
     int getCallCount()
     {
         return _callCount;
@@ -87,9 +103,15 @@ private:
     vector<pair<int, int>> _v;
 
     static CallInfo_Idler* _inst;
+    static mutex _mtx;
+    static GC _gc; // 一般不需要
 };
 
 CallInfo_Idler* CallInfo_Idler::_inst = nullptr;
+mutex CallInfo_Idler::_mtx;
+CallInfo_Idler::GC _gc;
+
+
 
 // 统计快排递归调用的次数
 void QuickSort(int* a, int left, int right)
@@ -148,5 +170,6 @@ void TestOP()
 
 void testSingleTon()
 {
+    TestOP();
 
 }
