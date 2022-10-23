@@ -1,57 +1,18 @@
-# Prerequisites
-*.d
+# file
+.DS_Store
 
-# Compiled Object files
-*.slo
-# *.lo
-# *.o
-*.obj
+# CLion
+cmake-build-debug/
+.idea/
 
-# Precompiled Headers
-*.gch
-*.pch
+# VSCode
+.vscode/
+main.dSYM
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-# *.exe
-# *.out
-# *.app
-
-#### VS2019
-
-# project_name/
+# VS2022
+x64/
+.vs/
 *.vcxproj
 *.filters
 *.user
-*.vs/
-*.DS_Store
-
-
-# project_name/Debug/project_name.tlog/
-*.tlog
-*.lastbuildstate
-*.txt
-
-# project_name/Debug/
-*.log
-*.recipe
-*.ilk
-*.enc
-*.obj
-*.idb
-*.pdb
-
+Debug/
